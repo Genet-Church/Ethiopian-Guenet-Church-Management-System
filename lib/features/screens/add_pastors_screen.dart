@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:genet_church_portal/core/settings/language_provider.dart';
+import 'package:genet_church_portal/shared_widgets/modern_card.dart';
+import 'package:genet_church_portal/shared_widgets/notification_system.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:genet_church_portal/state/providers.dart';
-import 'package:genet_church_portal/shared_widgets/content_card.dart';
-import 'package:genet_church_portal/shared_widgets/modern_text_field.dart';
+import 'package:genet_church_portal/shared_widgets/modern_input.dart';
 import 'package:genet_church_portal/shared_widgets/page_header.dart';
-import 'package:genet_church_portal/shared_widgets/primary_button.dart';
-import 'package:genet_church_portal/shared_widgets/secondary_button.dart';
+import 'package:genet_church_portal/shared_widgets/modern_button.dart';
 import 'package:iconsax/iconsax.dart';
+
+import '../../core/localization/app_localization.dart';
+import '../../core/utils/password_validator.dart';
 
 class AddPastorsScreen extends HookConsumerWidget {
   const AddPastorsScreen({super.key});
@@ -19,7 +23,8 @@ class AddPastorsScreen extends HookConsumerWidget {
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
     final formKey = useMemoized(() => GlobalKey<FormState>());
-    final isLoading = useState(false);
+    final locale = ref.watch(languageNotifierProvider);
+    final l10n = AppLocalization(locale);
 
     void clearForm() {
       nameController.clear();
@@ -27,40 +32,32 @@ class AddPastorsScreen extends HookConsumerWidget {
       passwordController.clear();
     }
 
-    void addPastor() async {
+    Future<void> addPastor() async {
       if (formKey.currentState?.validate() ?? false) {
-        isLoading.value = true;
         try {
-          await ref.read(pastorsProvider.notifier).addPastor(
-            fullName: nameController.text,
-            email: emailController.text,
-            password: passwordController.text,
-          );
+          await ref
+              .read(pastorsProvider.notifier)
+              .addPastor(
+                fullName: nameController.text,
+                email: emailController.text,
+                password: passwordController.text,
+              );
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content:
-                Text('${nameController.text} has been added successfully!'),
-                backgroundColor: Colors.green,
-              ),
+            context.showSuccessNotification(
+              title: l10n.success,
+              message: '${nameController.text} ${l10n.pastorAddedMessage}',
             );
             clearForm();
             context.go('/report-pastors');
           }
         } catch (e) {
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                    'Failed to add pastor. Please check the details and try again.'),
-                backgroundColor: Colors.red,
-              ),
+            context.showErrorNotification(
+              title: l10n.error,
+              message: l10n.failedAddPastor,
             );
           }
-        } finally {
-          if (context.mounted) {
-            isLoading.value = false;
-          }
+          rethrow;
         }
       }
     }
@@ -70,53 +67,34 @@ class AddPastorsScreen extends HookConsumerWidget {
       child: Column(
         children: [
           PageHeader(
-            title: 'New Pastor Details',
-            description: 'Enter the information for the new pastor. An invitation will be sent to their email to complete their profile.',
+            title: l10n.newPastorDetails,
+            description: l10n.newPastorDesc,
             action: PrimaryButton(
-              text: 'Add Pastor',
-              onPressed: addPastor,
-              isLoading: isLoading.value,
+              text: l10n.addPastor,
+              onPressedAsync: addPastor,
             ),
           ),
           const SizedBox(height: 24),
-          ContentCard(
+          ModernCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ModernTextField(
+                ModernInput(
                   controller: nameController,
-                  hintText: 'Pastor Full Name',
-                  icon: Iconsax.user,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Name cannot be empty' : null,
+                  label: l10n.pastorFullName,
+                  prefixIcon: Iconsax.user,
+                  validator: (value) => value!.isEmpty ? l10n.nameEmpty : null,
                 ),
                 const SizedBox(height: 16),
-                ModernTextField(
-                  controller: emailController,
-                  hintText: 'Email Address',
-                  icon: Iconsax.direct_right,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email cannot be empty';
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'Enter a valid email';
-                    }
-                    return null;
-                  },
-                ),
+                EmailInput(controller: emailController),
                 const SizedBox(height: 16),
-                ModernTextField(
+                PasswordInput(
                   controller: passwordController,
-                  hintText: 'Temporary Password',
-                  icon: Iconsax.key,
-                  obscureText: true,
-                  validator: (value) => value!.length < 6
-                      ? 'Password must be at least 6 characters'
-                      : null,
+                  label: l10n.temporaryPassword,
+                  validator: PasswordValidator.validate,
                 ),
                 const SizedBox(height: 32),
-                SecondaryButton(text: 'CLEAR FORM', onPressed: clearForm),
+                SecondaryButton(text: l10n.clearForm, onPressed: clearForm),
               ],
             ),
           ),
