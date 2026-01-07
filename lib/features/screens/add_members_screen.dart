@@ -177,23 +177,35 @@ class AddMembersScreen extends HookConsumerWidget {
 
       if (!allFormsValid) return;
 
-      // Get church ID - automatically from pastor if available, or from selection
+      // Get church ID - automatically from pastor/servant if available, or from selection
       String? selectedChurchId = ref.read(currentChurchProvider);
       
-      // If no church ID from selection, try to get it from pastor directly
+      // If no church ID from selection, try to get it from user's role details directly
       if (selectedChurchId == null) {
         final user = ref.read(authStateProvider);
-        if (user != null && user.roleEnum == UserRole.PASTOR) {
-          // Try from pastorDetails first
-          if (user.pastorDetails != null &&
-              user.pastorDetails!['churchId'] != null) {
-            selectedChurchId = user.pastorDetails!['churchId'] as String?;
+        if (user != null) {
+          // Handle PASTOR role
+          if (user.roleEnum == UserRole.PASTOR) {
+            // Try from pastorDetails first
+            if (user.pastorDetails != null &&
+                user.pastorDetails!['churchId'] != null) {
+              selectedChurchId = user.pastorDetails!['churchId'] as String?;
+            }
+            // If still null, try from currentPastorProvider
+            if (selectedChurchId == null) {
+              final pastorAsync = ref.read(currentPastorProvider);
+              if (pastorAsync.hasValue && pastorAsync.value?.churchId != null) {
+                selectedChurchId = pastorAsync.value!.churchId;
+              }
+            }
           }
-          // If still null, try from currentPastorProvider
-          if (selectedChurchId == null) {
-            final pastorAsync = ref.read(currentPastorProvider);
-            if (pastorAsync.hasValue && pastorAsync.value?.churchId != null) {
-              selectedChurchId = pastorAsync.value!.churchId;
+          
+          // Handle SERVANT role
+          if (user.roleEnum == UserRole.SERVANT) {
+            // Try from servantDetails
+            if (user.servantDetails != null &&
+                user.servantDetails!['churchId'] != null) {
+              selectedChurchId = user.servantDetails!['churchId'] as String?;
             }
           }
         }
