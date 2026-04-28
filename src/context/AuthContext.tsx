@@ -1,0 +1,207 @@
+import React, { createContext, useContext, useEffect, useState, useRef } from "react";
+import { Session, User } from "@supabase/supabase-js";
+import { supabase } from "../supabaseClient";
+import { Profile, GlobalSettings } from "../types";
+import { logActivity } from "../utils/activityLogger";
+import { UAParser } from 'ua-parser-js';
+
+import toast from "react-hot-toast";
+
+interface AuthContextType {
+  session: Session | null;
+  user: User | null;
+  profile: Profile | null;
+  loading: boolean;
+  settings: GlobalSettings | null;
+  calendarType: 'gregorian' | 'ethiopian';
+  signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+  updateCalendarType: (type: 'gregorian' | 'ethiopian') => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [settings, setSettings] = useState<GlobalSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [calendarType, setCalendarTypeState] = useState<'gregorian' | 'ethiopian'>(() => {
+    return (localStorage.getItem('guenet-calendar') as any) || 'gregorian';
+  });
+
+  const updateCalendarType = async (type: 'gregorian' | 'ethiopian') => {
+    setCalendarTypeState(type);
+    localStorage.setItem('guenet-calendar', type);
+    if (profile) {
+      await supabase.from('profiles').update({ calendar_type: type }).eq('id', profile.id);
+    }
+  };
+
+  useEffect(() => {
+    if (profile?.calendar_type) {
+      setCalendarTypeState(profile.calendar_type);
+      localStorage.setItem('guenet-calendar', profile.calendar_type);
+    }
+  }, [profile]);
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    // Only track activity if user is logged in
+    if (!user) return;
+
+    const resetTimer = () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(async () => {
+        toast.error("Logged out due to inactivity");
+        await signOut();
+      }, 3 * 60 * 1000); // 3 minutes
+    };
+
+    const events = ['mousemove', 'keydown', 'scroll', 'touchstart', 'click'];
+    events.forEach(event => window.addEventListener(event, resetTimer));
+    resetTimer();
+
+    return () => {
+      events.forEach(event => window.removeEventListener(event, resetTimer));
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [user]);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const { data } = await supabase
+        .from("global_settings")
+        .select("*")
+        .single();
+      if (data) setSettings(data);
+    };
+
+    fetchSettings();
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+        // Log login activity on SIGNED_IN event
+        if (_event === "SIGNED_IN") {
+          // Detect device type and model
+          const parser = new UAParser();
+          const result = parser.getResult();
+
+          let deviceName = "Unknown Device";
+
+          if (result.device.vendor && result.device.model) {
+            deviceName = `${result.device.vendor} ${result.device.model}`;
+          } else if (result.os.name) {
+            deviceName = `${result.os.name} ${result.os.version || ''} Desktop`.trim();
+          }
+
+          let deviceType = result.device.type === 'mobile' ? 'Mobile' : result.device.type === 'tablet' ? 'Tablet' : 'Desktop';
+
+          logActivity(
+            "LOGIN",
+            "SYSTEM",
+            `User logged in from ${deviceType} (${deviceName})`,
+            session.user.id
+          );
+        }
+      } else {
+        setProfile(null);
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchProfile = async (userId: string) => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+        await supabase.auth.signOut();
+        setProfile(null);
+        setUser(null);
+        setSession(null);
+        toast.error("Unable to load your profile. Please sign in again.");
+      } else if (data) {
+        if (data.is_blocked) {
+          await supabase.auth.signOut();
+          setProfile(null);
+          setUser(null);
+          setSession(null);
+          toast.error(
+            "Your account has been blocked. Please contact an administrator."
+          );
+        } else {
+          setProfile(data);
+        }
+      }
+    } catch (err) {
+      console.error("Unexpected error fetching profile:", err);
+      await supabase.auth.signOut();
+      setProfile(null);
+      setUser(null);
+      setSession(null);
+      toast.error("Unable to load your profile. Please sign in again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    // Log logout before signing out (while we still have the user's session)
+    await logActivity(
+      "LOGOUT",
+      "SYSTEM",
+      `User logged out`
+    );
+    await supabase.auth.signOut();
+  };
+
+  const refreshProfile = async () => {
+    if (user?.id) {
+      await fetchProfile(user.id);
+    }
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{ session, user, profile, loading, settings, calendarType, signOut, refreshProfile, updateCalendarType }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

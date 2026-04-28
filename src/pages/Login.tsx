@@ -1,0 +1,475 @@
+import React, { useState } from "react";
+import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
+import { useTheme } from "../context/ThemeContext";
+import { Mail, Lock, ArrowRight, ArrowLeft, CheckCircle, Globe, Sun, Moon, Quote } from "lucide-react";
+import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { springPresets, interactivePresets } from "../utils/animations";
+
+import logo from "../assets/logo.png";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+  const navigate = useNavigate();
+  const { session, profile, loading: authLoading } = useAuth();
+  const { t, language, setLanguage } = useLanguage();
+  const { theme, toggleTheme, isDark } = useTheme();
+
+  React.useEffect(() => {
+    if (session && profile) {
+      navigate("/");
+    }
+  }, [session, profile, navigate]);
+
+  if (authLoading || (session && profile)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full border-4 border-gray-100 border-t-[#4B9BDC] animate-spin"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
+            </div>
+          </div>
+          <p className="text-gray-500 font-medium animate-pulse">{t("login.establishingSession")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const loadingToast = toast.loading(t("login.signingIn"));
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      toast.error(error.message, { id: loadingToast });
+      setLoading(false);
+    } else {
+      toast.success(t("common.success"), { id: loadingToast });
+      // Navigation is now handled by the useEffect once the profile is loaded
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error(t('login.emailPlaceholder') || "Please enter your email address first."); // Note: adding a fallback just in case, but should add to locales
+      return;
+    }
+    setLoading(true);
+    const loadingToast = toast.loading(t('login.sending'));
+
+    // Make sure to set up your redirect URL in the Supabase Dashboard:
+    // Authentication -> URL Configuration -> Site URL & Redirect URLs
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+
+    if (error) {
+      toast.error(error.message, { id: loadingToast });
+    } else {
+      toast.success(t('login.checkEmail') || "Check your email for the reset link!", { id: loadingToast });
+      setResetSent(true);
+      setEmail("");
+    }
+    setLoading(false);
+  };
+
+  const formVariants = {
+    hidden: { opacity: 0, x: -30, filter: "blur(4px)" },
+    visible: {
+      opacity: 1,
+      x: 0,
+      filter: "blur(0px)",
+      transition: { type: "spring", stiffness: 300, damping: 30, staggerChildren: 0.1 }
+    },
+    exit: {
+      opacity: 0,
+      x: 30,
+      filter: "blur(4px)",
+      transition: { duration: 0.2, ease: "easeIn" }
+    }
+  };
+
+  const inputVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 150, damping: 20 } }
+  };
+
+  return (
+    <div className="min-h-screen flex bg-white dark:bg-gray-950 overflow-hidden relative">
+      <div className="absolute top-6 right-6 lg:right-12 z-50 flex items-center gap-4">
+        {/* Language Selector */}
+        <div className="relative group">
+          <div className="flex items-center gap-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-gray-200/50 dark:border-gray-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
+            <Globe size={18} className="text-[#4B9BDC] dark:text-[#7EC8F2]" />
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as any)}
+              className="bg-transparent text-sm font-semibold text-gray-700 dark:text-gray-200 outline-none cursor-pointer appearance-none pr-5 hover:text-[#4B9BDC] dark:hover:text-[#7EC8F2] transition-colors"
+            >
+              <option value="en">English</option>
+              <option value="am">አማርኛ</option>
+              <option value="om">Afaan Oromoo</option>
+              <option value="ti">ትግርኛ</option>
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 dark:text-gray-500">
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-2.5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-2xl border border-gray-200/50 dark:border-gray-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
+          aria-label="Toggle theme"
+        >
+          {isDark ? (
+            <Moon size={20} className="text-[#7EC8F2] group-hover:scale-110 transition-transform" />
+          ) : (
+            <Sun size={20} className="text-amber-500 group-hover:rotate-45 transition-transform" />
+          )}
+        </button>
+      </div>
+
+      {/* Left side - Form */}
+      <motion.div
+        initial={{ opacity: 0, x: -60 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ type: "spring", stiffness: 150, damping: 20, duration: 0.15 }}
+        className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:flex-none lg:w-[480px] xl:w-[600px] bg-white dark:bg-gray-950 z-10 relative"
+      >
+        <div className="mx-auto w-full max-w-sm lg:w-[400px]">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05, duration: 0.15 }}
+            className="flex items-center gap-3 mb-10"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f0f7fd] to-[#e2effc] flex items-center justify-center shadow-lg shadow-[#4B9BDC]/10 ring-1 ring-[#4B9BDC]/10 p-2">
+              <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1e293b] dark:from-white to-[#4B9BDC] tracking-tight">
+                {t("login.title")}
+              </h1>
+              <p className="text-sm font-semibold text-[#4B9BDC] uppercase tracking-wider">
+                {t("login.subtitle")}
+              </p>
+            </div>
+          </motion.div>
+
+          <AnimatePresence mode="wait">
+            {!isForgotPassword ? (
+              <motion.div
+                key="login"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 mb-2">
+                    {t("login.welcomeBack")}
+                  </h2>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    {t("login.signInSub")}
+                  </p>
+                </div>
+
+                <form onSubmit={handleLogin} className="space-y-5">
+                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-1.5">
+                      {t("login.email")}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Mail size={18} className="text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-[#4B9BDC]/50 focus:border-[#4B9BDC] outline-none transition-all dark:text-gray-200 sm:text-sm"
+                        placeholder="email@gmail.com" // This is a generic placeholder, but could be translated if needed
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div variants={inputVariants} whileHover={interactivePresets.hover} whileTap={interactivePresets.tap}>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-1.5">
+                      {t("login.password")}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Lock size={18} className="text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <input
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-[#4B9BDC]/50 focus:border-[#4B9BDC] outline-none transition-all dark:text-gray-200 sm:text-sm"
+                        placeholder="••••••••"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <div className="flex items-center justify-between pt-2">
+                    <div className="flex items-center">
+                      <input
+                        id="remember-me"
+                        name="remember-me"
+                        type="checkbox"
+                        className="h-4 w-4 text-[#4B9BDC] focus:ring-[#4B9BDC] border-gray-300 rounded"
+                      />
+                      <label
+                        htmlFor="remember-me"
+                        className="ml-2 block text-sm text-gray-700 dark:text-gray-400"
+                      >
+                        {t("login.rememberMe")}
+                      </label>
+                    </div>
+
+                    <div className="text-sm">
+                      <button
+                        type="button"
+                        onClick={() => setIsForgotPassword(true)}
+                        className="font-semibold text-[#4B9BDC] hover:text-[#7EC8F2] transition-colors"
+                      >
+                        {t("login.forgotPassword")}
+                      </button>
+                    </div>
+                  </div>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-2xl shadow-[0_8px_30px_rgb(75,155,220,0.3)] text-sm font-bold text-white bg-gradient-to-r from-[#4B9BDC] to-[#3a85c2] hover:from-[#3a85c2] hover:to-[#295b86] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4B9BDC] transition-all duration-150 disabled:opacity-70 disabled:cursor-not-allowed mt-8 group"
+                  >
+                    {loading ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        {t("login.signingIn")}
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        {t("login.signIn")}
+                        <ArrowRight
+                          size={18}
+                          className="ml-2 opacity-70 group-hover:translate-x-1 transition-transform"
+                        />
+                      </div>
+                    )}
+                  </motion.button>
+                </form>
+              </motion.div>
+            ) : resetSent ? (
+              <motion.div
+                key="reset-success"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="text-center"
+              >
+                <div className="mb-8 flex flex-col items-center">
+                  <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-6 ring-8 ring-green-100/50">
+                    <CheckCircle size={40} className="text-green-500" />
+                  </div>
+                  <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 mb-2">
+                    {t("login.checkEmail")}
+                  </h2>
+                  <p className="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
+                    {t("login.checkEmailSub")}
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setResetSent(false);
+                      setIsForgotPassword(false);
+                    }}
+                    className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-2xl shadow-sm text-sm font-bold text-white bg-[#4B9BDC] hover:bg-[#3a85c2] focus:outline-none transition-all duration-150 group"
+                  >
+                    {t("login.backToSignIn")}
+                  </motion.button>
+
+                  <p className="text-sm text-gray-500 dark:text-gray-400 pt-4">
+                    {t("login.didntReceive")}{" "}
+                    <button
+                      onClick={() => setResetSent(false)}
+                      className="text-[#4B9BDC] font-semibold hover:underline"
+                    >
+                      {t("login.tryAgain")}
+                    </button>
+                  </p>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="reset"
+                variants={formVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <div className="mb-8">
+                  <button
+                    onClick={() => {
+                      setIsForgotPassword(false);
+                      setResetSent(false);
+                    }}
+                    className="flex items-center text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors mb-6"
+                  >
+                    <ArrowLeft size={16} className="mr-1" /> {t("login.backToLogin")}
+                  </button>
+                  <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 mb-2">
+                    {t("login.resetPassword")}
+                  </h2>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    {t("login.resetSub")}
+                  </p>
+                </div>
+
+                <form onSubmit={handleResetPassword} className="space-y-5">
+                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-1.5">
+                      {t("login.email")}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Mail size={18} className="text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-[#4B9BDC]/50 focus:border-[#4B9BDC] outline-none transition-all dark:text-gray-200 sm:text-sm"
+                        placeholder="email@gmail.com"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-2xl shadow-[0_8px_30px_rgb(75,155,220,0.3)] text-sm font-bold text-white bg-gradient-to-r from-[#4B9BDC] to-[#3a85c2] hover:from-[#3a85c2] hover:to-[#295b86] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4B9BDC] transition-all duration-150 disabled:opacity-70 disabled:cursor-not-allowed mt-8 group"
+                  >
+                    {loading ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        {t("login.sending")}
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        {t("login.sendReset")}
+                        <Mail
+                          size={18}
+                          className="ml-2 opacity-70 group-hover:scale-110 transition-transform"
+                        />
+                      </div>
+                    )}
+                  </motion.button>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      {/* Right side - Image/Graphic */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="hidden lg:block relative w-0 flex-1 overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0c1929] via-[#132d4a] to-[#4B9BDC] opacity-95"></div>
+
+        {/* Decorative elements */}
+        <motion.div
+          animate={{ scale: [1, 1.05, 1], rotate: [0, 5, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-[#7EC8F2]/20 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[500px] h-[500px] bg-[#4B9BDC]/25 rounded-full blur-[100px]"
+        />
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.05, type: "spring", stiffness: 100 }}
+            className="w-32 h-32 rounded-[2.5rem] bg-white/10 backdrop-blur-xl flex items-center justify-center mb-10 shadow-[0_12px_40px_rgba(255,255,255,0.15)] p-4 ring-4 ring-white/10"
+          >
+            <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain drop-shadow-[0_0_12px_rgba(126,200,242,0.4)]" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.05, duration: 0.15 }}
+            className="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tight leading-tight drop-shadow-sm"
+          >
+            {t("login.empoweringMinistry")}
+          </motion.h2>
+
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.2 }}
+            className="relative max-w-lg p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl"
+          >
+            <Quote className="absolute -top-4 -left-4 text-[#7EC8F2]/40 w-12 h-12 -rotate-12" />
+            <Quote className="absolute -bottom-4 -right-4 text-[#7EC8F2]/40 w-12 h-12" style={{ transform: 'rotate(180deg)' }} />
+
+            <p className="text-xl md:text-2xl text-blue-50 font-serif italic leading-relaxed mb-6">
+              "{(() => {
+                const desc = t("login.description");
+                const match = desc.match(/(Revelation|ራእይ|Mul'ata)\s+\d+:\d+$/);
+                return match ? desc.substring(0, match.index).trim() : desc;
+              })()}"
+            </p>
+
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-px w-8 bg-gradient-to-r from-transparent to-[#7EC8F2]/50" />
+              <span className="text-[#7EC8F2] font-bold tracking-widest uppercase text-sm">
+                {t("login.description").match(/(Revelation|ራእይ|Mul'ata)\s+\d+:\d+$/)?.[0] || ""}
+              </span>
+              <div className="h-px w-8 bg-gradient-to-l from-transparent to-[#7EC8F2]/50" />
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
