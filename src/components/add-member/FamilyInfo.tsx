@@ -77,7 +77,7 @@ const FamilyInfo: React.FC<FamilyInfoProps> = ({
               onClick={() =>
                 append({ name: "", gender: "", age: "", education: "", faith: "" })
               }
-              className="text-sm bg-guenet-green/10 text-guenet-green px-3 py-1.5 rounded-lg hover:bg-guenet-green/20 font-medium flex items-center gap-1 transition-colors"
+              className="text-sm bg-guenet-green/10 text-guenet-green px-5 py-2.5 rounded-lg hover:bg-guenet-green/20 font-medium flex items-center gap-1 transition-colors"
             >
               <Plus size={16} /> {t('members.addChild')}
             </button>

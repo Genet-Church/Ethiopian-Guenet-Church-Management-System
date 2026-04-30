@@ -159,6 +159,10 @@ export default function Departments() {
       toast.error(t('departments.messages.nameRequired'));
       return;
     }
+    if (!/^[\p{L}\s\-_&]+$/u.test(formData.name)) {
+      toast.error("Department name cannot contain numbers or special characters");
+      return;
+    }
     if (!formData.church_id) {
       toast.error(t('departments.messages.churchRequired'));
       return;

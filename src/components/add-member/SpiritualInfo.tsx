@@ -63,7 +63,7 @@ const SpiritualInfo: React.FC<SpiritualInfoProps> = ({ register }) => {
               <button
                 key={status}
                 type="button"
-                className={`py-3 px-4 rounded-xl text-sm font-bold transition-all border-2 border-gray-100 dark:border-gray-800 text-gray-500 hover:border-gray-200`}
+                className={`py-4 px-6 rounded-xl text-sm font-bold transition-all border-2 border-gray-100 dark:border-gray-800 text-gray-500 hover:border-gray-200`}
               >
                 {t(`members.form.baptismOptions.${status}`)}
               </button>

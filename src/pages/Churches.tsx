@@ -139,6 +139,10 @@ export default function Churches() {
       toast.error(t('churches.messages.nameRequired'));
       return;
     }
+    if (!/^[\p{L}\s\-_.,&]+$/u.test(newChurch.name)) {
+      toast.error("Church name cannot contain numbers or special characters");
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -174,6 +178,10 @@ export default function Churches() {
     e.preventDefault();
     if (!newChurch.name || !editingChurch) {
       toast.error(t('churches.messages.nameRequired'));
+      return;
+    }
+    if (!/^[\p{L}\s\-_.,&]+$/u.test(newChurch.name)) {
+      toast.error("Church name cannot contain numbers or special characters");
       return;
     }
 

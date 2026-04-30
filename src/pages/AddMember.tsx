@@ -23,11 +23,11 @@ import { useMediaQuery } from "../hooks/useMediaQuery";
 
 const memberSchema = z.object({
   photo: z.any().optional(),
-  full_name: z.string().min(2, "Full name is required"),
+  full_name: z.string().min(2, "Full name is required").regex(/^[\p{L}\s]+$/u, "Name cannot contain numbers or special characters"),
   dob: z.string().optional().nullable(),
   place_of_birth: z.string().optional().nullable(),
-  mother_tongue: z.string().optional().nullable(),
-  phone: z.string().optional().nullable(),
+  mother_tongue: z.string().regex(/^[\p{L}\s]*$/u, "Language cannot contain numbers or special characters").optional().nullable(),
+  phone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Invalid phone number format").optional().or(z.literal("")).nullable(),
   email: z.string().email("Invalid email").optional().or(z.literal("")).nullable(),
   salvation_date: z.string().optional().nullable(),
   salvation_place: z.string().optional().nullable(),
@@ -35,6 +35,7 @@ const memberSchema = z.object({
   reason_for_coming: z.string().optional().nullable(),
   faith: z.string().optional().nullable(),
   baptism_status: z.string().optional().nullable(),
+  baptism_date: z.string().optional().nullable(),
   field_of_study: z.string().optional().nullable(),
   educational_level: z.string().optional().nullable(),
   grade: z.string().optional().nullable(),
@@ -73,6 +74,29 @@ const memberSchema = z.object({
   middle_sector_rep_signature: z.string().optional().nullable(),
   status: z.enum(["Active", "Death", "Transfer"]),
   department_id: z.string().optional().nullable(),
+}).superRefine((data, ctx) => {
+  if (data.dob) {
+    const dob = new Date(data.dob);
+    if (data.salvation_date) {
+      const salvationDate = new Date(data.salvation_date);
+      if (salvationDate < dob) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Salvation date cannot be before date of birth", path: ["salvation_date"] });
+      }
+    }
+    if (data.baptism_date) {
+      const baptismDate = new Date(data.baptism_date);
+      if (baptismDate < dob) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Baptism date cannot be before date of birth", path: ["baptism_date"] });
+      }
+    }
+  }
+  if (data.salvation_date && data.baptism_date) {
+    const salvationDate = new Date(data.salvation_date);
+    const baptismDate = new Date(data.baptism_date);
+    if (baptismDate < salvationDate) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Baptism date cannot be before salvation date", path: ["baptism_date"] });
+    }
+  }
 });
 
 export type MemberFormValues = z.infer<typeof memberSchema>;
@@ -444,7 +468,7 @@ export default function AddMember() {
                   <button
                     key={section.id}
                     onClick={() => scrollToSection(section.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-left transition-all duration-150 group ${isActive ? 'shadow-[0_4px_20px_rgba(0,0,0,0.06)] scale-[1.02]' : ''}`}
+                    className={`w-full flex items-center gap-3 px-6 py-4.5 rounded-xl text-left transition-all duration-150 group ${isActive ? 'shadow-[0_4px_20px_rgba(0,0,0,0.06)] scale-[1.02]' : ''}`}
                     style={isActive ? d.card : {}}
                   >
                     <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-150 ${isActive ? `bg-gradient-to-br ${section.color} text-white shadow-md` : 'text-gray-500 dark:text-gray-400 group-hover:bg-gray-200 dark:group-hover:bg-gray-800'}`}
@@ -526,7 +550,7 @@ export default function AddMember() {
                           type="button"
                           onClick={() => setIsDeptMenuOpen(!isDeptMenuOpen)}
                           style={d.searchBar(isDeptMenuOpen)}
-                          className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl border-2 transition-all duration-200 shadow-sm ${isDeptMenuOpen
+                          className={`w-full flex items-center justify-between px-6 py-4.5 rounded-2xl border-2 transition-all duration-200 shadow-sm ${isDeptMenuOpen
                             ? "border-[#4B9BDC] ring-4 ring-[#4B9BDC]/10"
                             : "border-blue-100/50 hover:border-blue-200"
                             }`}
@@ -642,7 +666,8 @@ export default function AddMember() {
                   )}
                   <div>
                     <label className="form-label">{t('members.form.dob')}</label>
-                    <input type="date" {...register("dob")} className="form-input" />
+                    <input type="date" {...register("dob")} className={`form-input ${errors.dob ? 'border-red-500' : ''}`} />
+                    {errors.dob && <p className="form-error mt-1 text-xs text-red-500">{errors.dob.message}</p>}
                   </div>
                   <div>
                     <label className="form-label">{t('members.form.placeOfBirth')}</label>
@@ -650,11 +675,13 @@ export default function AddMember() {
                   </div>
                   <div>
                     <label className="form-label">{t('members.form.motherTongue')}</label>
-                    <input {...register("mother_tongue")} className="form-input" placeholder={t('members.form.motherTonguePlaceholder')} />
+                    <input {...register("mother_tongue")} className={`form-input ${errors.mother_tongue ? 'border-red-500' : ''}`} placeholder={t('members.form.motherTonguePlaceholder')} />
+                    {errors.mother_tongue && <p className="form-error mt-1 text-xs text-red-500">{errors.mother_tongue.message}</p>}
                   </div>
                   <div>
                     <label className="form-label">{t('members.form.phoneNumber')}</label>
-                    <input {...register("phone")} className="form-input" placeholder={t('members.form.phonePlaceholder')} />
+                    <input {...register("phone")} className={`form-input ${errors.phone ? 'border-red-500' : ''}`} placeholder={t('members.form.phonePlaceholder')} />
+                    {errors.phone && <p className="form-error mt-1 text-xs text-red-500">{errors.phone.message}</p>}
                   </div>
                   <div className="md:col-span-2">
                     <label className="form-label">{t('login.email')} {promoteToServant && !isEditing && <span className="text-red-400">*</span>}</label>
@@ -693,7 +720,11 @@ export default function AddMember() {
               </div>
               <div className="p-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div><label className="form-label">{t('members.form.salvationInfo')}</label><input type="date" {...register("salvation_date")} className="form-input" /></div>
+                  <div>
+                    <label className="form-label">{t('members.form.salvationInfo')}</label>
+                    <input type="date" {...register("salvation_date")} className={`form-input ${errors.salvation_date ? 'border-red-500' : ''}`} />
+                    {errors.salvation_date && <p className="form-error mt-1 text-xs text-red-500">{errors.salvation_date.message}</p>}
+                  </div>
                   <div><label className="form-label">{t('members.form.placeOfBirth')}</label><input {...register("salvation_place")} className="form-input" placeholder={t('members.form.salvationPlacePlaceholder')} /></div>
                   <div className="md:col-span-2"><label className="form-label">{t('members.form.previousChurch')}</label><input {...register("previous_church")} className="form-input" placeholder={t('members.form.prevChurchPlaceholder')} /></div>
                   <div className="md:col-span-2"><label className="form-label">{t('members.form.reasonForComing')}</label><input {...register("reason_for_coming")} className="form-input" placeholder={t('members.form.reasonPlaceholder')} /></div>
@@ -705,7 +736,7 @@ export default function AddMember() {
                           key={status}
                           type="button"
                           onClick={() => setValue("baptism_status", status, { shouldDirty: true })}
-                          className={`py-3 px-4 rounded-xl text-sm font-bold transition-all border-2 ${watch("baptism_status") === status
+                          className={`py-4 px-6 rounded-xl text-sm font-bold transition-all border-2 ${watch("baptism_status") === status
                             ? "border-[#4B9BDC] bg-[#4B9BDC]/10 text-[#4B9BDC]"
                             : "border-gray-100 dark:border-gray-800 text-gray-500 hover:border-gray-200"
                             }`}
@@ -715,6 +746,13 @@ export default function AddMember() {
                       ))}
                     </div>
                   </div>
+                  {watch("baptism_status") === "done" && (
+                    <div className="md:col-span-2">
+                      <label className="form-label">Baptism Date</label>
+                      <input type="date" {...register("baptism_date")} className={`form-input ${errors.baptism_date ? 'border-red-500' : ''}`} />
+                      {errors.baptism_date && <p className="form-error mt-1 text-xs text-red-500">{errors.baptism_date.message}</p>}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -835,7 +873,7 @@ export default function AddMember() {
                   <div className="flex justify-between items-center mb-5">
                     <h3 className="text-base font-bold text-gray-800">{t('members.form.childrenInfo')}</h3>
                     <button type="button" onClick={() => append({ name: "", gender: "", age: "", education: "", faith: "" })}
-                      className="text-sm bg-[#4B9BDC]/10 text-[#4B9BDC] px-4 py-2 rounded-xl hover:bg-[#4B9BDC]/20 font-semibold flex items-center gap-1.5 transition-colors">
+                      className="text-sm bg-[#4B9BDC]/10 text-[#4B9BDC] px-6 py-3 rounded-xl hover:bg-[#4B9BDC]/20 font-semibold flex items-center gap-1.5 transition-colors">
                       <Plus size={16} /> {t('members.addChild')}
                     </button>
                   </div>
@@ -950,7 +988,7 @@ export default function AddMember() {
                     <button
                       type="button"
                       onClick={saveDraft}
-                      className="w-full md:w-auto px-8 flex items-center justify-center gap-3 py-4 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-lg transition-all"
+                      className="w-full md:w-auto px-10 flex items-center justify-center gap-3 py-5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-lg transition-all"
                     >
                       <Save size={22} />
                       {t('members.saveDraft')}
@@ -959,7 +997,7 @@ export default function AddMember() {
                   <button
                     onClick={handleSubmit(onSubmit)}
                     disabled={uploading || (isEditing ? (!isDirty && !(watch("photo") instanceof File)) : !watch("full_name"))}
-                    className="flex-1 w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-[#4B9BDC] to-[#7EC8F2] text-white rounded-2xl hover:scale-[1.02] active:scale-[0.98] font-bold text-lg shadow-[0_8px_30px_rgba(75,155,220,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 w-full flex items-center justify-center gap-3 py-5 bg-gradient-to-r from-[#4B9BDC] to-[#7EC8F2] text-white rounded-2xl hover:scale-[1.02] active:scale-[0.98] font-bold text-lg shadow-[0_8px_30px_rgba(75,155,220,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {uploading ? <Loader2 className="animate-spin" size={22} /> : <CheckCircle size={22} />}
                     {isEditing ? t('members.editBtn') : t('members.addBtn')}
@@ -1023,7 +1061,7 @@ export default function AddMember() {
                         required
                         value={servantPassword}
                         onChange={(e) => setServantPassword(e.target.value)}
-                        className="w-full pl-12 pr-5 py-3.5 border-0 rounded-2xl focus:outline-none transition-all font-medium text-gray-900 placeholder-gray-400"
+                        className="w-full pl-12 pr-6 py-4.5 border-0 rounded-2xl focus:outline-none transition-all font-medium text-gray-900 placeholder-gray-400"
                         style={{ background: '#f8fafc', boxShadow: 'inset 0 0 0 1.5px rgba(0,0,0,0.08)' }}
                         placeholder={t('members.form.passwordTip')}
                       />
@@ -1034,14 +1072,14 @@ export default function AddMember() {
                     <button
                       type="button"
                       onClick={() => setIsMakeServantModalOpen(false)}
-                      className="flex-1 py-3.5 rounded-xl font-bold text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      className="flex-1 py-4.5 rounded-xl font-bold text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                     >
                       {t('common.cancel')}
                     </button>
                     <button
                       type="submit"
                       disabled={makingServant || !servantPassword || servantPassword.length < 6}
-                      className="flex-1 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-[#4B9BDC] to-[#7EC8F2] shadow-lg disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
+                      className="flex-1 py-4.5 rounded-xl font-bold text-white bg-gradient-to-r from-[#4B9BDC] to-[#7EC8F2] shadow-lg disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
                     >
                       {makingServant ? <Loader2 size={18} className="animate-spin" /> : <Shield size={18} />}
                       {t('common.confirm')}

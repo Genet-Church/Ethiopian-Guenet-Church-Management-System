@@ -303,6 +303,10 @@ export default function Servants() {
           toast.error(t('servants.messages.nameRequired'));
           return;
         }
+        if (!/^[\p{L}\s]+$/u.test(formData.full_name)) {
+          toast.error("Servant name cannot contain numbers or special characters");
+          return;
+        }
 
         const oldChurch = churches.find(c => c.id === editingServant.church_id)?.name || "Unknown";
         const newChurch = churches.find(c => c.id === (profile?.role === "super_admin" ? formData.church_id : editingServant.church_id))?.name || oldChurch;
@@ -347,6 +351,10 @@ export default function Servants() {
 
         if (!formData.full_name || !formData.email || !formData.password || !formData.church_id) {
           toast.error(t('servants.messages.detailsRequired'));
+          return;
+        }
+        if (!/^[\p{L}\s]+$/u.test(formData.full_name)) {
+          toast.error("Servant name cannot contain numbers or special characters");
           return;
         }
 
