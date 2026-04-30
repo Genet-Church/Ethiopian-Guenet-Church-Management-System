@@ -6,7 +6,7 @@ import { defineConfig, loadEnv } from "vite";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ".", "");
   return {
-    base: "/Ethiopian-Guenet-Church-Management-System-/",
+    base: "/Ethiopian-Guenet-Church-Management-System/",
     plugins: [react(), tailwindcss()],
     define: {
       "process.env.SOME_API_KEY": JSON.stringify(env.SOME_API_KEY),
