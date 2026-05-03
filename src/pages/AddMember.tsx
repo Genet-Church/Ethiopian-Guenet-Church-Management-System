@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ImageCropper from "../components/ImageCropper";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { logActivity, getObjectDiff } from "../utils/activityLogger";
 import { invokeSupabaseFunction } from "../utils/supabaseFunctions";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
+import LanguageChipSelector from "../components/LanguageChipSelector";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { ds } from "../utils/darkStyles";
@@ -26,7 +27,7 @@ const memberSchema = z.object({
   full_name: z.string().min(2, "Full name is required").regex(/^[\p{L}\s]+$/u, "Name cannot contain numbers or special characters"),
   dob: z.string().optional().nullable(),
   place_of_birth: z.string().optional().nullable(),
-  mother_tongue: z.string().regex(/^[\p{L}\s]*$/u, "Language cannot contain numbers or special characters").optional().nullable(),
+  mother_tongue: z.string().optional().nullable(),
   phone: z.string().regex(/^\+?[\d\s-]{10,15}$/, "Invalid phone number format").optional().or(z.literal("")).nullable(),
   email: z.string().email("Invalid email").optional().or(z.literal("")).nullable(),
   salvation_date: z.string().optional().nullable(),
@@ -673,10 +674,13 @@ export default function AddMember() {
                     <label className="form-label">{t('members.form.placeOfBirth')}</label>
                     <input {...register("place_of_birth")} className="form-input" placeholder={t('members.form.placeOfBirthPlaceholder')} />
                   </div>
-                  <div>
+                  <div className="md:col-span-2">
                     <label className="form-label">{t('members.form.motherTongue')}</label>
-                    <input {...register("mother_tongue")} className={`form-input ${errors.mother_tongue ? 'border-red-500' : ''}`} placeholder={t('members.form.motherTonguePlaceholder')} />
-                    {errors.mother_tongue && <p className="form-error mt-1 text-xs text-red-500">{errors.mother_tongue.message}</p>}
+                    <LanguageChipSelector
+                      value={watch("mother_tongue") || ""}
+                      onChange={(val) => setValue("mother_tongue", val, { shouldDirty: true })}
+                      error={errors.mother_tongue?.message}
+                    />
                   </div>
                   <div>
                     <label className="form-label">{t('members.form.phoneNumber')}</label>

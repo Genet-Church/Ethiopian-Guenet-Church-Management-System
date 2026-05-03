@@ -168,7 +168,30 @@ export default function MemberDetails({ member }: MemberDetailsProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 md:gap-y-4 gap-x-6">
             <InfoItem label={t('members.form.dob')} value={formatDate(member.dob)} icon={Calendar} />
             <InfoItem label={t('members.form.placeOfBirth')} value={member.place_of_birth} icon={MapPin} />
-            <InfoItem label={t('members.form.motherTongue')} value={member.mother_tongue} icon={Globe} />
+            {member.mother_tongue && (
+              <div className="mb-4 group">
+                <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1.5">
+                  {t('members.form.motherTongue')}
+                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <Globe size={16} className="text-gray-500 dark:text-gray-400 shrink-0 mr-0.5" />
+                  {member.mother_tongue.split(",").map((lang: string) => lang.trim()).filter(Boolean).map((lang: string, idx: number) => (
+                    <span
+                      key={idx}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold ${
+                        ["አማርኛ", "Oromo", "ትግርኛ"].includes(lang)
+                          ? "bg-gradient-to-r from-[#4B9BDC]/10 to-[#7EC8F2]/10 text-[#4B9BDC] border border-[#4B9BDC]/20"
+                          : isDark
+                          ? "bg-gray-800 text-gray-300 border border-gray-700"
+                          : "bg-gray-100 text-gray-600 border border-gray-200"
+                      }`}
+                    >
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
             <InfoItem label={t('members.form.phoneNumber')} value={member.phone} icon={Phone} />
             <InfoItem label={t('login.email')} value={member.email} icon={Mail} />
           </div>

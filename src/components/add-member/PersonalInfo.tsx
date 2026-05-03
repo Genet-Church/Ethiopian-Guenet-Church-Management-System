@@ -1,13 +1,16 @@
 import React from "react";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from "react-hook-form";
 import { MemberFormValues } from "../../pages/AddMember";
 import { User, Upload, Plus } from "lucide-react";
+import LanguageChipSelector from "../LanguageChipSelector";
 
 interface PersonalInfoProps {
   register: UseFormRegister<MemberFormValues>;
   errors: FieldErrors<MemberFormValues>;
   photoPreview: string | null;
   handleFileSelect: (file: File) => void;
+  setValue?: UseFormSetValue<MemberFormValues>;
+  watch?: UseFormWatch<MemberFormValues>;
 }
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({
@@ -15,6 +18,8 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   errors,
   photoPreview,
   handleFileSelect,
+  setValue,
+  watch,
 }) => {
   return (
     <div className="space-y-6">
@@ -88,11 +93,19 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
 
         <div>
           <label className="form-label">Mother Tongue</label>
-          <input
-            {...register("mother_tongue")}
-            className="form-input"
-            placeholder="e.g. Amharic"
-          />
+          {setValue && watch ? (
+            <LanguageChipSelector
+              value={watch("mother_tongue") || ""}
+              onChange={(val) => setValue("mother_tongue", val, { shouldDirty: true })}
+              error={errors.mother_tongue?.message}
+            />
+          ) : (
+            <input
+              {...register("mother_tongue")}
+              className="form-input"
+              placeholder="e.g. Amharic"
+            />
+          )}
         </div>
 
         <div>
