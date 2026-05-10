@@ -179,7 +179,7 @@ export default function Servants() {
         .eq("role", "servant")
         .order("created_at", { ascending: false });
 
-      if ((profile?.role === "pastor" || profile?.role === "servant") && profile.church_id) {
+      if ((profile?.role === "admin" || profile?.role === "servant") && profile.church_id) {
         query = query.eq("church_id", profile.church_id);
       }
 
@@ -208,7 +208,7 @@ export default function Servants() {
         .eq("role", "servant")
         .order("created_at", { ascending: false });
 
-      if ((profile?.role === "pastor" || profile?.role === "servant") && profile.church_id) {
+      if ((profile?.role === "admin" || profile?.role === "servant") && profile.church_id) {
         query = query.eq("church_id", profile.church_id);
       }
 
@@ -536,7 +536,7 @@ export default function Servants() {
               </div>
             </div>
 
-            {profile?.role === "pastor" && (
+            {profile?.role === "admin" && (
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -704,7 +704,7 @@ export default function Servants() {
                           <RefreshCw size={14} />
                         </button>
                       )}
-                      {profile?.role === "pastor" && (
+                      {profile?.role === "admin" && (
                         <button
                           onClick={() => handleEdit(servant)}
                           className="p-2 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"

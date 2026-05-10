@@ -2,7 +2,7 @@
     "sidebar": {
         "dashboard": "Dashboard",
         "churches": "Churches",
-        "pastors": "Pastors",
+        "admins": "Admins",
         "servants": "Servants",
         "departments": "Departments",
         "members": "Members",
@@ -125,11 +125,11 @@
         "selectItem": "Select an item to view details",
         "roles": {
             "super_admin": "Super Admin",
-            "pastor": "Pastor",
+            "admin": "Admin",
             "servant": "Servant",
             "member": "Member",
             "MEMBER": "Member",
-            "PASTOR": "Pastor",
+            "ADMIN": "Admin",
             "SERVANT": "Servant",
             "SUPER_ADMIN": "Super Admin"
         },
@@ -137,7 +137,7 @@
             "title": "Change Role",
             "subtitle": "Update permissions and access",
             "selectAssignment": "Select New Assignment",
-            "pastorLabel": "Pastor",
+            "pastorLabel": "Admin",
             "pastorSub": "Church Lead",
             "servantLabel": "Servant",
             "servantSub": "Dept Worker",
@@ -212,7 +212,7 @@
         "servantSubtitle": "Manage members in your department. Register, search and track local participants.",
         "stats": {
             "churches": "Branches",
-            "pastors": "Pastors",
+            "admins": "Admins",
             "servants": "Servants",
             "members": "Members",
             "activeMinistries": "Active Ministries",
@@ -462,43 +462,43 @@
         },
         "deleteDepartment": "Delete Department"
     },
-    "pastors": {
-        "title": "Pastor Directory",
-        "subtitle": "Manage church leadership, branch assignments, and pastor accounts.",
-        "registerPastor": "Register Pastor",
-        "edit": "Edit Pastor",
-        "register": "Register Pastor",
-        "pastor": "Pastor",
+    "admins": {
+        "title": "Admin Directory",
+        "subtitle": "Manage church leadership, branch assignments, and admin accounts.",
+        "registerPastor": "Register Admin",
+        "edit": "Edit Admin",
+        "register": "Register Admin",
+        "admin": "Admin",
         "searchPlaceholder": "Search by name, email or church...",
         "labels": {
             "leadership": "Leadership",
-            "manageProfile": "Manage Pastor Profile"
+            "manageProfile": "Manage Admin Profile"
         },
         "form": {
             "fullName": "Full Name",
-            "namePlaceholder": "Pastor Full Name",
+            "namePlaceholder": "Admin Full Name",
             "email": "Email Address",
-            "emailPlaceholder": "pastor@example.com",
+            "emailPlaceholder": "admin@example.com",
             "temporaryPassword": "Temporary Password",
             "assignBranch": "Assign Branch",
             "chooseAnotherWay": "Choose another way (Skip search)"
         },
         "actions": {
-            "block": "Block Pastor",
-            "unblock": "Unblock Pastor",
+            "block": "Block Admin",
+            "unblock": "Unblock Admin",
             "changeRole": "Change Role"
         },
         "messages": {
-            "loadError": "Error loading pastors",
+            "loadError": "Error loading admins",
             "blockConfirmPrefix": "Are you sure you want to {{action}} {{name}}?",
             "blockWarning": "They will lose system access.",
             "unblockWarning": "They will regain system access.",
-            "blockSuccess": "Pastor blocked successfully",
-            "unblockSuccess": "Pastor unblocked successfully",
+            "blockSuccess": "Admin blocked successfully",
+            "unblockSuccess": "Admin unblocked successfully",
             "nameRequired": "Full name is required",
-            "updateSuccess": "Pastor updated successfully",
+            "updateSuccess": "Admin updated successfully",
             "detailsRequired": "Please fill in all required fields",
-            "confirmDeleteMsg": "Are you sure you want to delete this pastor? This action cannot be undone."
+            "confirmDeleteMsg": "Are you sure you want to delete this admin? This action cannot be undone."
         }
     },
     "members": {
@@ -682,7 +682,7 @@
         "lastPage": "Last page",
         "scope": {
             "super_admin": "All system-wide activities",
-            "pastor": "Activities within your church",
+            "admin": "Activities within your church",
             "servant": "Activities within your church"
         },
         "labels": {
@@ -705,7 +705,7 @@
         },
         "entities": {
             "SERVANT": "Servant",
-            "PASTOR": "Pastor",
+            "ADMIN": "Admin",
             "MEMBER": "Member",
             "CHURCH": "Church",
             "DEPARTMENT": "Department",

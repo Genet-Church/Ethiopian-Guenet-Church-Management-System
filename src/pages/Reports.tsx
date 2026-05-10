@@ -108,7 +108,9 @@ export default function Reports() {
     const d = ds(isDark);
 
     const [churches, setChurches] = useState<any[]>([]);
-    const [selectedChurchId, setSelectedChurchId] = useState<string>("all");
+    const [selectedChurchId, setSelectedChurchId] = useState<string>(
+        profile?.role === "admin" && profile?.church_id ? profile.church_id : "all"
+    );
     const [dateRange, setDateRange] = useState("last_6_months");
     const [viewMode, setViewMode] = useState<"visual" | "table">("visual");
 
@@ -164,6 +166,12 @@ export default function Reports() {
         fetchAllData();
     }, [selectedChurchId, dateRange]);
 
+    useEffect(() => {
+        if (profile?.role === "admin" && profile?.church_id) {
+            setSelectedChurchId(profile.church_id);
+        }
+    }, [profile]);
+
     // Update map view when filtered churches change
     useEffect(() => {
         if (churchesWithCoords.length > 0) {
@@ -197,7 +205,7 @@ export default function Reports() {
             }
             const { data: membersData } = await membersQuery;
 
-            // 3. Fetch Profiles (Pastors & Servants)
+            // 3. Fetch Profiles (Admins & Servants)
             let profilesQuery = supabase.from("profiles").select("*");
             if (selectedChurchId !== "all") {
                 profilesQuery = profilesQuery.eq("church_id", selectedChurchId);
@@ -294,12 +302,12 @@ export default function Reports() {
         setGrowthData(growthArr);
 
         // --- 2. Distribution Calculation ---
-        const pastorsCount = profiles.filter((p: any) => p.role === "pastor").length;
+        const pastorsCount = profiles.filter((p: any) => p.role === "admin").length;
         const servantsCount = profiles.filter((p: any) => p.role === "servant").length;
 
         setDistributionData([
             { category: t("sidebar.members"), amount: members.length, color: "#10b981" },
-            { category: t("sidebar.pastors"), amount: pastorsCount, color: "#3b82f6" },
+            { category: t("sidebar.admins"), amount: pastorsCount, color: "#3b82f6" },
             { category: t("sidebar.servants"), amount: servantsCount, color: "#f59e0b" },
             ...(profile?.role !== "servant" ? [{ category: t("sidebar.departments"), amount: departments.length, color: "#8b5cf6" }] : []),
             { category: t("sidebar.activities"), amount: activities.length, color: "#ec4899" },
@@ -550,6 +558,8 @@ export default function Reports() {
         doc.setGState(new (doc as any).GState({ opacity: 1.0 }));
 
         // ── Logo ──
+        doc.setFillColor(255, 255, 255);
+        doc.rect(margin, 8, 22, 22, "F");
         doc.addImage(logo, "PNG", margin, 8, 22, 22);
 
         // ── Header Text ──
@@ -598,7 +608,7 @@ export default function Reports() {
         // ░░░ KPI SUMMARY CARDS ░░░
         // ═══════════════════════════════════════════════════════════════
 
-        const pastorsCount = stats.profiles.filter((p: any) => p.role === "pastor").length;
+        const pastorsCount = stats.profiles.filter((p: any) => p.role === "admin").length;
         const servantsCount = stats.profiles.filter((p: any) => p.role === "servant").length;
 
         // Build KPI items based on context
@@ -612,7 +622,7 @@ export default function Reports() {
         }
 
         kpiItems.push(
-            { label: t("sidebar.pastors"), value: pastorsCount.toLocaleString(), color: [139, 92, 246], icon: "" },
+            { label: t("sidebar.admins"), value: pastorsCount.toLocaleString(), color: [139, 92, 246], icon: "" },
             { label: t("sidebar.servants"), value: servantsCount.toLocaleString(), color: [245, 158, 11], icon: "" },
         );
 
@@ -1216,11 +1226,14 @@ export default function Reports() {
                             <select
                                 value={selectedChurchId}
                                 onChange={(e) => setSelectedChurchId(e.target.value)}
+                                disabled={profile?.role === "admin"}
                                 className="w-full pl-12 pr-10 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl border-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 appearance-none font-bold text-sm"
                                 style={d.formInput}
                             >
-                                <option value="all">{t("reports.allChurches")}</option>
-                                {churches.map((c) => (
+                                {profile?.role !== "admin" && <option value="all">{t("reports.allChurches")}</option>}
+                                {churches
+                                    .filter(c => profile?.role !== "admin" || c.id === profile?.church_id)
+                                    .map((c) => (
                                     <option key={c.id} value={c.id}>
                                         {c.name}
                                     </option>

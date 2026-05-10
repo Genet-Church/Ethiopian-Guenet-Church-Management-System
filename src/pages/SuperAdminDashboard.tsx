@@ -106,7 +106,7 @@ export default function SuperAdminDashboard() {
   const [maintenanceMode, setMaintenanceMode] = useState(settings?.is_maintenance_mode || false);
   const [recentActivities, setRecentActivities] = useState<any[]>([]);
   const [stats, setStats] = useState({
-    churches: 0, pastors: 0, servants: 0, members: 0,
+    churches: 0, admins: 0, servants: 0, members: 0,
     recentMembers: 0, recentChurches: 0,
     activeMembers: 0, transferMembers: 0, deceasedMembers: 0,
   });
@@ -162,7 +162,7 @@ export default function SuperAdminDashboard() {
   const fetchStats = async () => {
     try {
       const { count: churchCount } = await supabase.from("churches").select("*", { count: "exact", head: true });
-      const { count: pastorCount } = await supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "pastor");
+      const { count: pastorCount } = await supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "admin");
       const { count: servantCount } = await supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "servant");
       const { count: memberCount } = await supabase.from("members").select("*", { count: "exact", head: true });
 
@@ -178,7 +178,7 @@ export default function SuperAdminDashboard() {
       const { count: recentChurchesCount } = await supabase.from("churches").select("*", { count: "exact", head: true }).gte("created_at", isoDate);
 
       setStats({
-        churches: churchCount || 0, pastors: pastorCount || 0, servants: servantCount || 0,
+        churches: churchCount || 0, admins: pastorCount || 0, servants: servantCount || 0,
         members: memberCount || 0, recentMembers: recentMembersCount || 0,
         recentChurches: recentChurchesCount || 0,
         activeMembers: activeCount || 0, transferMembers: transferCount || 0, deceasedMembers: deceasedCount || 0,
@@ -224,7 +224,7 @@ export default function SuperAdminDashboard() {
     return Math.round((recentCount / oldTotal) * 100);
   };
 
-  const totalPeople = stats.members + stats.servants + stats.pastors;
+  const totalPeople = stats.members + stats.servants + stats.admins;
   const memberGrowth = getGrowthRate(stats.members, stats.recentMembers);
   const churchGrowth = getGrowthRate(stats.churches, stats.recentChurches);
 
@@ -283,7 +283,7 @@ export default function SuperAdminDashboard() {
       <motion.div variants={containerVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
         {[
           { label: t('dashboard.stats.churches'), value: stats.churches, recent: stats.recentChurches, icon: Building, gradient: "from-blue-600 to-blue-400", bgLight: "bg-blue-50", textColor: "text-blue-600" },
-          { label: t('dashboard.stats.pastors'), value: stats.pastors, recent: 0, icon: Shield, gradient: "from-violet-600 to-purple-400", bgLight: "bg-purple-50", textColor: "text-purple-600" },
+          { label: t('dashboard.stats.admins'), value: stats.admins, recent: 0, icon: Shield, gradient: "from-violet-600 to-purple-400", bgLight: "bg-purple-50", textColor: "text-purple-600" },
           { label: t('dashboard.stats.servants'), value: stats.servants, recent: 0, icon: UserCheck, gradient: "from-amber-500 to-orange-400", bgLight: "bg-orange-50", textColor: "text-orange-600" },
           { label: t('dashboard.stats.members'), value: stats.members, recent: stats.recentMembers, icon: Users, gradient: "from-emerald-600 to-teal-400", bgLight: "bg-emerald-50", textColor: "text-emerald-600" },
         ].map((card, i) => (
@@ -349,14 +349,14 @@ export default function SuperAdminDashboard() {
             <>
               <div className="w-44 h-44 mx-auto mb-6">
                 <DonutChart segments={[
-                  { value: stats.pastors, color: '#8b5cf6', label: t('dashboard.stats.pastors') },
+                  { value: stats.admins, color: '#8b5cf6', label: t('dashboard.stats.admins') },
                   { value: stats.servants, color: '#f59e0b', label: t('dashboard.stats.servants') },
                   { value: stats.members, color: '#10b981', label: t('dashboard.stats.members') },
                 ]} />
               </div>
               <div className="space-y-2.5">
                 {[
-                  { label: t('dashboard.stats.pastors'), value: stats.pastors, color: 'bg-violet-500', pct: totalPeople > 0 ? Math.round((stats.pastors / totalPeople) * 100) : 0 },
+                  { label: t('dashboard.stats.admins'), value: stats.admins, color: 'bg-violet-500', pct: totalPeople > 0 ? Math.round((stats.admins / totalPeople) * 100) : 0 },
                   { label: t('dashboard.stats.servants'), value: stats.servants, color: 'bg-amber-500', pct: totalPeople > 0 ? Math.round((stats.servants / totalPeople) * 100) : 0 },
                   { label: t('dashboard.stats.members'), value: stats.members, color: 'bg-emerald-500', pct: totalPeople > 0 ? Math.round((stats.members / totalPeople) * 100) : 0 },
                 ].map((item, i) => (

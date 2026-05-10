@@ -19,7 +19,7 @@ import Churches from "./pages/Churches";
 import Departments from "./pages/Departments";
 import Members from "./pages/Members";
 import Settings from "./pages/Settings";
-import Pastors from "./pages/Pastors";
+import Admins from "./pages/Admins";
 import Servants from "./pages/Servants";
 import Activities from "./pages/Activities";
 import AddMember from "./pages/AddMember";
@@ -120,17 +120,17 @@ export default function App() {
                   />
 
                   <Route
-                    path="pastors"
+                    path="admins"
                     element={
                       <RoleGuard allowedRoles={["super_admin"]}>
-                        <Pastors />
+                        <Admins />
                       </RoleGuard>
                     }
                   />
                   <Route
                     path="servants"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin"]}>
                         <Servants />
                       </RoleGuard>
                     }
@@ -138,7 +138,7 @@ export default function App() {
                   <Route
                     path="departments"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <Departments />
                       </RoleGuard>
                     }
@@ -146,7 +146,7 @@ export default function App() {
                   <Route
                     path="departments/:id"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <Departments />
                       </RoleGuard>
                     }
@@ -155,7 +155,7 @@ export default function App() {
                   <Route
                     path="members"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <Members />
                       </RoleGuard>
                     }
@@ -163,7 +163,7 @@ export default function App() {
                   <Route
                     path="members/:id"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <Members />
                       </RoleGuard>
                     }
@@ -172,7 +172,7 @@ export default function App() {
                   <Route
                     path="members/add"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <AddMember />
                       </RoleGuard>
                     }
@@ -180,7 +180,7 @@ export default function App() {
                   <Route
                     path="members/edit/:id"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <AddMember />
                       </RoleGuard>
                     }
@@ -189,7 +189,7 @@ export default function App() {
                   <Route
                     path="settings"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <Settings />
                       </RoleGuard>
                     }
@@ -197,7 +197,7 @@ export default function App() {
                   <Route
                     path="activities"
                     element={
-                      <RoleGuard allowedRoles={["super_admin", "pastor", "servant"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
                         <Activities />
                       </RoleGuard>
                     }
@@ -206,7 +206,7 @@ export default function App() {
                   <Route
                     path="reports"
                     element={
-                      <RoleGuard allowedRoles={["super_admin"]}>
+                      <RoleGuard allowedRoles={["super_admin", "admin"]}>
                         <Reports />
                       </RoleGuard>
                     }

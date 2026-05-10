@@ -2,7 +2,7 @@
     "sidebar": {
         "dashboard": "ዳሽቦርድ",
         "churches": "አብያተ ክርስቲያናት",
-        "pastors": "ፓስተራት",
+        "admins": "ፓስተራት",
         "servants": "ኣገልገልቲ",
         "departments": "ክፍልታት",
         "members": "ኣባላት",
@@ -125,11 +125,11 @@
         "selectItem": "ዝርዝር ን ምርኣይ ሓደ ነገር ምረጽ",
         "roles": {
             "super_admin": "ሱፐር ኣድሚን",
-            "pastor": "ፓስተር",
+            "admin": "ፓስተር",
             "servant": "ኣገልጋሊ",
             "member": "ኣባል",
             "MEMBER": "ኣባል",
-            "PASTOR": "ፓስተር",
+            "ADMIN": "ፓስተር",
             "SERVANT": "ኣገልጋሊ",
             "SUPER_ADMIN": "ሱፐር ኣድሚን"
         },
@@ -212,7 +212,7 @@
         "servantSubtitle": "ኣብ ክፍልኻ ዘለዉ ኣባላት ምራሕ። መዝግብ፡ ድለ፡ ተኸታተል ድማ።",
         "stats": {
             "churches": "ጨንፈራት",
-            "pastors": "ፓስተራት",
+            "admins": "ፓስተራት",
             "servants": "ኣገልገልቲ",
             "members": "ኣባላት",
             "activeMinistries": "ንጡፋት ኣገልግሎታት",
@@ -462,13 +462,13 @@
         },
         "deleteDepartment": "ክፍሊ ደምስስ"
     },
-    "pastors": {
+    "admins": {
         "title": "ማህደር ፓስተራት",
         "subtitle": "መሪሕነት ቤተ ክርስቲያን፡ ምደባ ጨንፈራትን መለያ ፓስተራትን ምራሕ።",
         "registerPastor": "ፓስተር መዝግብ",
         "edit": "ፓስተር ኣሐድስ",
         "register": "ፓስተር መዝግብ",
-        "pastor": "ፓስተር",
+        "admin": "ፓስተር",
         "searchPlaceholder": "ብስም፡ ኢሜይል ወይ ቤተ ክርስቲያን ድለ...",
         "labels": {
             "leadership": "መሪሕነት",
@@ -478,7 +478,7 @@
             "fullName": "ምሉእ ስም",
             "namePlaceholder": "ምሉእ ስም ፓስተር",
             "email": "ኢሜይል",
-            "emailPlaceholder": "pastor@example.com",
+            "emailPlaceholder": "admin@example.com",
             "temporaryPassword": "ግዚያዊ ቃለ-መሕልፎ",
             "assignBranch": "ጨንፈር መድብ"
         },
@@ -666,6 +666,7 @@
         "systemHint": "ናይ ስርዓት ስጉምትታት ኣብዚ ክረኣዩ እዮም።",
         "event": "ፍጻሜ",
         "events": "ፍጻሜታት",
+        "filterByDate": "ብዕለት ፍለይ",
         "changeDetails": "ዝርዝር ለውጢ",
         "before": "ቅድሚ",
         "after": "ድሕሪ",
@@ -679,7 +680,7 @@
         "lastPage": "መወዳእታ ገጽ",
         "scope": {
             "super_admin": "ኹሎም ጥፈታት ስርዓት",
-            "pastor": "ኣብ ቤተ ክርስቲያንካ ዘለዉ ጥፈታት",
+            "admin": "ኣብ ቤተ ክርስቲያንካ ዘለዉ ጥፈታት",
             "servant": "ኣብ ቤተ ክርስቲያንካ ዘለዉ ጥፈታት"
         },
         "labels": {
@@ -702,7 +703,7 @@
         },
         "entities": {
             "SERVANT": "ኣገልጋሊ",
-            "PASTOR": "ፓስተር",
+            "ADMIN": "ፓስተር",
             "MEMBER": "ኣባል",
             "CHURCH": "ቤተ ክርስቲያን",
             "DEPARTMENT": "ክፍሊ",

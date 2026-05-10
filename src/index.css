@@ -558,9 +558,8 @@ textarea.form-input:focus {
 .sidebar-logo-wrap {
   width: 44px;
   height: 44px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
+  border-radius: 0;
+  background: #ffffff;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -1719,7 +1718,7 @@ html.dark *:focus-visible {
 /* ═══════════════════════════════════════════════════════════════════════════
    ████  PAGE-LEVEL DARK MODE OVERRIDES  ████
    These rules target inline-styled elements across all pages
-   (Churches, Pastors, Servants, Departments, Members, Modals, Layout, etc.)
+   (Churches, Admins, Servants, Departments, Members, Modals, Layout, etc.)
    using high-specificity selectors with !important to override inline styles.
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -1884,7 +1883,7 @@ html.dark button[style*="rgba(0,0,0,0.04)"] {
   border-color: rgba(75, 155, 220, 0.1) !important;
 }
 
-/* ─────────────── Dark Action Pill Bar (Pastors/Servants/Members cards) ─────────────── */
+/* ─────────────── Dark Action Pill Bar (Admins/Servants/Members cards) ─────────────── */
 html.dark .flex.items-center.gap-1[style*="rgba(255,255,255,0.8)"] {
   background: rgba(15, 23, 42, 0.7) !important;
   border-color: rgba(75, 155, 220, 0.12) !important;
@@ -2326,57 +2325,4 @@ html.dark .placeholder-gray-500::placeholder {
 
 .marker-pulse-ring {
   animation: churchMarkerPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-/* ─────────────── Custom Scrollbar (Thin + Subtle) ─────────────── */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(75, 155, 220, 0.15);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(75, 155, 220, 0.3);
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* ─────────────── Command Palette Overrides ─────────────── */
-/* Ensure command palette input doesn't get overridden by global form styles */
-[class*="CommandPalette"] input,
-.fixed input[style*="border: none"] {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  transform: none !important;
-}
-
-/* ─────────────── Desktop Top Bar ─────────────── */
-@media (min-width: 1024px) {
-  .layout-main-content {
-    padding-top: 4.5rem !important;
-  }
-}
-
-/* ─────────────── Kbd Styles ─────────────── */
-kbd {
-  font-family: var(--font-sans);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }

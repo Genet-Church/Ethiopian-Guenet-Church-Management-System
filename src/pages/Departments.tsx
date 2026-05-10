@@ -113,7 +113,7 @@ export default function Departments() {
       setLoading(true);
       let query = supabase.from("departments").select(`*, churches ( name ), members:members(count), profile_departments(count)`);
 
-      if ((profile?.role === "pastor" || profile?.role === "servant") && profile.church_id) {
+      if ((profile?.role === "admin" || profile?.role === "servant") && profile.church_id) {
         query = query.eq("church_id", profile.church_id);
       }
 
@@ -140,7 +140,7 @@ export default function Departments() {
     try {
       let query = supabase.from("departments").select(`*, churches ( name ), members:members(count)`);
 
-      if ((profile?.role === "pastor" || profile?.role === "servant") && profile.church_id) {
+      if ((profile?.role === "admin" || profile?.role === "servant") && profile.church_id) {
         query = query.eq("church_id", profile.church_id);
       }
 
@@ -288,7 +288,7 @@ export default function Departments() {
       detail={<DepartmentDetails department={selectedDeptForView} />}
       title={selectedDeptForView?.name || t('departments.detailsTitle')}
       actions={
-        selectedDeptForView && (profile?.role === "pastor" || profile?.role === "servant") && (
+        selectedDeptForView && (profile?.role === "admin" || profile?.role === "servant") && (
           <div className="flex items-center gap-1">
             <button
               onClick={() => handleEdit(selectedDeptForView)}

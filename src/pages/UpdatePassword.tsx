@@ -96,7 +96,7 @@ export default function UpdatePassword() {
                         transition={{ delay: 0.05, duration: 0.15 }}
                         className="flex items-center gap-3 mb-10"
                     >
-                        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-lg shadow-[#4B9BDC]/10 ring-1 ring-gray-100 p-2">
+                        <div className="w-16 h-16 rounded-none bg-white flex items-center justify-center shadow-lg shadow-gray-200/50 ring-1 ring-gray-100 p-2">
                             <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain" />
                         </div>
                         <div>
@@ -221,7 +221,7 @@ export default function UpdatePassword() {
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.05, type: "spring", stiffness: 100 }}
-                        className="w-32 h-32 rounded-[2.5rem] bg-white flex items-center justify-center mb-10 shadow-[0_12px_40px_rgba(255,255,255,0.2)] p-4 ring-4 ring-white/10"
+                        className="w-32 h-32 rounded-none bg-white flex items-center justify-center mb-10 shadow-2xl shadow-black/10 p-4 ring-4 ring-white/20"
                     >
                         <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain" />
                     </motion.div>

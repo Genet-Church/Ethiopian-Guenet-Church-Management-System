@@ -68,7 +68,7 @@ export default function Churches() {
       let query = supabase.from("churches").select("*, members(count)");
 
       if (
-        (profile?.role === "pastor" || profile?.role === "servant") &&
+        (profile?.role === "admin" || profile?.role === "servant") &&
         profile.church_id
       ) {
         query = query.eq("id", profile.church_id);

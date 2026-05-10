@@ -21,7 +21,7 @@ export type ActionType =
  */
 export type EntityType =
   | "SERVANT"
-  | "PASTOR"
+  | "ADMIN"
   | "MEMBER"
   | "CHURCH"
   | "DEPARTMENT"
@@ -76,7 +76,7 @@ export const getActionColor = (action: string): { bg: string; text: string; bord
 export const getEntityLabel = (entity: string): string => {
   const labels: Record<string, string> = {
     SERVANT: "servant",
-    PASTOR: "pastor",
+    ADMIN: "admin",
     MEMBER: "member",
     CHURCH: "church",
     DEPARTMENT: "department",

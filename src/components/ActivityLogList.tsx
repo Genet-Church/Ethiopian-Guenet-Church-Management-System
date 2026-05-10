@@ -91,8 +91,8 @@ export default function ActivityLogList({
         return;
       }
 
-      // Pastor: activities from users in the same church
-      const effectiveChurchId = churchId || (role === "pastor" ? profile?.church_id : null);
+      // Admin: activities from users in the same church
+      const effectiveChurchId = churchId || (role === "admin" ? profile?.church_id : null);
 
       if (effectiveChurchId) {
         const { data, error } = await supabase

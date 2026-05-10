@@ -65,7 +65,7 @@ function HorizontalBar({ label, value, maxValue, color, icon: Icon, d }: { label
   );
 }
 
-export default function PastorDashboard() {
+export default function AdminDashboard() {
   const { isDark } = useTheme();
   const { t } = useLanguage();
   const d = ds(isDark);

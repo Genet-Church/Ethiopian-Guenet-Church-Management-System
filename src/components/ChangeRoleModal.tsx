@@ -21,7 +21,7 @@ export default function ChangeRoleModal({
   onSuccess,
 }: ChangeRoleModalProps) {
   const { t } = useLanguage();
-  const [role, setRole] = useState<"pastor" | "servant">("servant");
+  const [role, setRole] = useState<"admin" | "servant">("servant");
   const [churchId, setChurchId] = useState("");
   const [departmentId, setDepartmentId] = useState("");
   const [churches, setChurches] = useState<Church[]>([]);
@@ -31,7 +31,7 @@ export default function ChangeRoleModal({
   useEffect(() => {
     if (isOpen && user) {
       const initialRole =
-        user.role === "super_admin" ? "pastor" : (user.role as any);
+        user.role === "super_admin" ? "admin" : (user.role as any);
       setRole(initialRole);
       setChurchId(user.church_id || "");
       setDepartmentId(user.department_id || "");
@@ -185,28 +185,28 @@ export default function ChangeRoleModal({
                 {t('common.roleModal.selectAssignment')}
               </label>
               <div className="grid grid-cols-2 gap-4">
-                {/* Pastor Option */}
+                {/* Admin Option */}
                 <button
                   type="button"
-                  onClick={() => setRole("pastor")}
-                  className={`group relative flex flex-col items-center justify-center p-5 rounded-[28px] border-2 transition-all duration-300 ${role === "pastor"
+                  onClick={() => setRole("admin")}
+                  className={`group relative flex flex-col items-center justify-center p-5 rounded-[28px] border-2 transition-all duration-300 ${role === "admin"
                     ? "border-guenet-green bg-guenet-green/5 dark:bg-guenet-green/10 shadow-lg shadow-guenet-green/10"
                     : "border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 hover:border-guenet-green/30 hover:bg-white dark:hover:bg-gray-800 hover:shadow-md text-gray-500"
                     }`}
                 >
-                  {role === "pastor" && (
+                  {role === "admin" && (
                     <div className="absolute top-3 right-3 bg-guenet-green text-white p-1 rounded-full animate-in zoom-in duration-300">
                       <Check size={12} strokeWidth={3} />
                     </div>
                   )}
                   <div
-                    className={`p-3 rounded-2xl mb-3 transition-colors duration-300 ${role === "pastor" ? "bg-guenet-green text-white" : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 group-hover:text-guenet-green shadow-sm"
+                    className={`p-3 rounded-2xl mb-3 transition-colors duration-300 ${role === "admin" ? "bg-guenet-green text-white" : "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 group-hover:text-guenet-green shadow-sm"
                       }`}
                   >
                     <User size={28} />
                   </div>
                   <span
-                    className={`text-sm font-bold tracking-tight transition-colors ${role === "pastor" ? "text-guenet-green" : "text-gray-600 dark:text-gray-400"
+                    className={`text-sm font-bold tracking-tight transition-colors ${role === "admin" ? "text-guenet-green" : "text-gray-600 dark:text-gray-400"
                       }`}
                   >
                     {t('common.roleModal.pastorLabel')}

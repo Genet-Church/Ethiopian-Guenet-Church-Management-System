@@ -39,8 +39,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { ds } from "../utils/darkStyles";
 import { formatDisplayDate, formatDisplayDateTime } from "../utils/dateFormatter";
-
-
+import DatePicker from "../components/common/DatePicker";
 
 // Local format wrapper using global context will be handled in-component
 
@@ -78,23 +77,24 @@ export default function Activities() {
   const [actionFilter, setActionFilter] = useState("All");
   const [entityFilter, setEntityFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateFilter, setDateFilter] = useState<Date | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   const ENTITY_FILTERS = profile?.role === "servant"
-    ? ["All", "SERVANT", "PASTOR", "MEMBER", "CHURCH", "PROFILE", "SETTINGS", "SYSTEM"]
-    : ["All", "SERVANT", "PASTOR", "MEMBER", "CHURCH", "DEPARTMENT", "PROFILE", "SETTINGS", "SYSTEM"];
+    ? ["All", "SERVANT", "ADMIN", "MEMBER", "CHURCH", "PROFILE", "SETTINGS", "SYSTEM"]
+    : ["All", "SERVANT", "ADMIN", "MEMBER", "CHURCH", "DEPARTMENT", "PROFILE", "SETTINGS", "SYSTEM"];
 
   // Role-based scope description
   const scopeLabel = profile?.role === "super_admin"
     ? t("activity.scope.super_admin")
-    : profile?.role === "pastor"
-      ? t("activity.scope.pastor")
+    : profile?.role === "admin"
+      ? t("activity.scope.admin")
       : t("activity.scope.servant");
 
   const scopeIcon = profile?.role === "super_admin"
     ? Eye
-    : (profile?.role === "pastor" || profile?.role === "servant")
+    : (profile?.role === "admin" || profile?.role === "servant")
       ? Building
       : User;
 
@@ -104,8 +104,8 @@ export default function Activities() {
   const buildQuery = useCallback((forCount = false) => {
     const role = profile?.role;
 
-    // Pastor: activities from users in the same church
-    if (role === "pastor" && profile?.church_id) {
+    // Admin: activities from users in the same church
+    if (role === "admin" && profile?.church_id) {
       if (forCount) {
         // For count, we use !inner join to filter by church
         let query = supabase
@@ -197,8 +197,16 @@ export default function Activities() {
     if (searchQuery.trim()) {
       query = query.ilike("details", `%${searchQuery.trim()}%`);
     }
+    if (dateFilter) {
+      const startOfDay = new Date(dateFilter);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(dateFilter);
+      endOfDay.setHours(23, 59, 59, 999);
+      query = query.gte("created_at", startOfDay.toISOString());
+      query = query.lte("created_at", endOfDay.toISOString());
+    }
     return query;
-  }, [actionFilter, entityFilter, searchQuery]);
+  }, [actionFilter, entityFilter, searchQuery, dateFilter]);
 
   // Fetch total count for pagination
   const fetchCount = useCallback(async () => {
@@ -240,7 +248,7 @@ export default function Activities() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [actionFilter, entityFilter, searchQuery]);
+  }, [actionFilter, entityFilter, searchQuery, dateFilter]);
 
   // Fetch data when page or filters change
   useEffect(() => {
@@ -248,7 +256,7 @@ export default function Activities() {
       fetchLogs();
       fetchCount();
     }
-  }, [profile, currentPage, actionFilter, entityFilter, searchQuery, fetchLogs, fetchCount]);
+  }, [profile, currentPage, actionFilter, entityFilter, searchQuery, dateFilter, fetchLogs, fetchCount]);
 
   // Real-time subscription
   useEffect(() => {
@@ -475,6 +483,16 @@ export default function Activities() {
           </select>
           <Shield size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 pointer-events-none" />
         </div>
+
+        {/* Date Filter */}
+        <div className="w-full lg:w-56 relative">
+          <DatePicker
+            value={dateFilter}
+            onChange={setDateFilter}
+            placeholder={t("activity.filterByDate") || "Filter by Date"}
+            className="w-full"
+          />
+        </div>
       </motion.div>
 
       {/* Activity List */}
@@ -495,7 +513,7 @@ export default function Activities() {
               {t("activity.noActivity")}
             </h3>
             <p className="text-sm text-gray-500 mt-2 max-w-sm mx-auto">
-              {searchQuery || actionFilter !== "All" || entityFilter !== "All"
+              {searchQuery || actionFilter !== "All" || entityFilter !== "All" || dateFilter
                 ? t("activity.noResults")
                 : profile?.role === "servant"
                   ? t("activity.servantHint")

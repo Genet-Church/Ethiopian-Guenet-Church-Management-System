@@ -2,7 +2,7 @@
     "sidebar": {
         "dashboard": "Daashboordii",
         "churches": "Waldaalee",
-        "pastors": "Luboota",
+        "admins": "Luboota",
         "servants": "Tajaajiltoota",
         "departments": "Kutaalee",
         "members": "Miseensota",
@@ -125,11 +125,11 @@
         "selectItem": "Bal'inaan arguuf waan tokko filadhu",
         "roles": {
             "super_admin": "Super Admin",
-            "pastor": "Luba",
+            "admin": "Luba",
             "servant": "Tajaajilaa",
             "member": "Miseensa",
             "MEMBER": "Miseensa",
-            "PASTOR": "Luba",
+            "ADMIN": "Luba",
             "SERVANT": "Tajaajilaa",
             "SUPER_ADMIN": "Super Admin"
         },
@@ -212,7 +212,7 @@
         "servantSubtitle": "Miseensota kutaa keetii bulchi. Galmeessi, barbaadi fi hordofi.",
         "stats": {
             "churches": "Dameewwan",
-            "pastors": "Luboota",
+            "admins": "Luboota",
             "servants": "Tajaajiltoota",
             "members": "Miseensota",
             "activeMinistries": "Tajaajiloota Hojiirra Jiran",
@@ -462,13 +462,13 @@
         },
         "deleteDepartment": "Kutaa Haqi"
     },
-    "pastors": {
+    "admins": {
         "title": "Maqaa Lubootaa",
         "subtitle": "Hogganummaa waldaa, ramaddii dameewwan fi akkawuntii lubootaa bulchi.",
         "registerPastor": "Luba Galmeessi",
         "edit": "Luba Haaromsi",
         "register": "Luba Galmeessi",
-        "pastor": "Luba",
+        "admin": "Luba",
         "searchPlaceholder": "Maqaan, iimeeliin ykn waldaan barbaadi...",
         "labels": {
             "leadership": "Hogganummaa",
@@ -667,6 +667,7 @@
         "systemHint": "Gochaaleen sirnaa asitti mul'atu.",
         "event": "ta'ee",
         "events": "ta'eewwan",
+        "filterByDate": "Guyyaan calali",
         "changeDetails": "Bal'ina Jijjiiramaa",
         "before": "Dura",
         "after": "Booda",
@@ -680,7 +681,7 @@
         "lastPage": "Fuula dhumaa",
         "scope": {
             "super_admin": "Gochaalee sirnaa hunda",
-            "pastor": "Gochaalee waldaa keetii keessatti",
+            "admin": "Gochaalee waldaa keetii keessatti",
             "servant": "Gochaalee waldaa keetii keessatti"
         },
         "labels": {
@@ -703,7 +704,7 @@
         },
         "entities": {
             "SERVANT": "Tajaajilaa",
-            "PASTOR": "Luba",
+            "ADMIN": "Luba",
             "MEMBER": "Miseensa",
             "CHURCH": "Waldaa",
             "DEPARTMENT": "Kutaa",

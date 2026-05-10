@@ -2,7 +2,7 @@
     "sidebar": {
         "dashboard": "ዳሽቦርድ",
         "churches": "አብያተ ክርስቲያናት",
-        "pastors": "መጋቢዎች",
+        "admins": "አስተዳዳሪዎች",
         "servants": "አገልጋዮች",
         "departments": "ዘርፎች",
         "members": "አባላት",
@@ -125,11 +125,11 @@
         "selectItem": "ዝርዝሩን ለማየት አንድ ነገር ይምረጡ",
         "roles": {
             "super_admin": "ሱፐር አድሚን",
-            "pastor": "መጋቢ",
+            "admin": "አስተዳዳሪ",
             "servant": "አገልጋይ",
             "member": "አባል",
             "MEMBER": "አባል",
-            "PASTOR": "መጋቢ",
+            "ADMIN": "አስተዳዳሪ",
             "SERVANT": "አገልጋይ",
             "SUPER_ADMIN": "ሱፐር አድሚን"
         },
@@ -137,7 +137,7 @@
             "title": "ሚና ይለውጡ",
             "subtitle": "መዳረሻን እና ፈቃዶችን ያዘምኑ",
             "selectAssignment": "አዲስ ምድብ ይምረጡ",
-            "pastorLabel": "መጋቢ",
+            "pastorLabel": "አስተዳዳሪ",
             "pastorSub": "የቤተክርስቲያን መሪ",
             "servantLabel": "አገልጋይ",
             "servantSub": "የዘርፍ ሰራተኛ",
@@ -212,7 +212,7 @@
         "servantSubtitle": "በአገልግሎትዎ ውስጥ ያሉ አባላትን ያስተዳድሩ። የአካባቢውን አባላት ይመዝግቡ፣ ይፈልጉ እና ይከታተሉ።",
         "stats": {
             "churches": "ቅርንጫፎች",
-            "pastors": "መጋቢዎች",
+            "admins": "አስተዳዳሪዎች",
             "servants": "አገልጋዮች",
             "members": "አባላት",
             "activeMinistries": "ንቁ አገልግሎቶች",
@@ -462,29 +462,29 @@
         },
         "deleteDepartment": "ዘርፍ ሰርዝ"
     },
-    "pastors": {
-        "title": "የ መጋቢዎች ማውጫ",
-        "subtitle": "የቤተክርስቲያን አመራርን፣ ቅርንጫፍ ምደባዎችን እና የመጋቢዎችን አካውንቶችን ያስተዳድሩ።",
-        "registerPastor": "መጋቢ ይመዝግቡ",
-        "edit": "መጋቢ ያዘምኑ",
-        "register": "መጋቢ ይመዝግቡ",
-        "pastor": "መጋቢ",
+    "admins": {
+        "title": "የ አስተዳዳሪዎች ማውጫ",
+        "subtitle": "የቤተክርስቲያን አመራርን፣ ቅርንጫፍ ምደባዎችን እና የአስተዳዳሪዎችን አካውንቶችን ያስተዳድሩ።",
+        "registerPastor": "አስተዳዳሪ ይመዝግቡ",
+        "edit": "አስተዳዳሪ ያዘምኑ",
+        "register": "አስተዳዳሪ ይመዝግቡ",
+        "admin": "አስተዳዳሪ",
         "searchPlaceholder": "በስም፣ በኢሜይል ወይም በቤተክርስቲያን ይፈልጉ...",
         "labels": {
             "leadership": "አመራር",
-            "manageProfile": "የመጋቢ መገለጫን ያስተዳድሩ"
+            "manageProfile": "የአስተዳዳሪ መገለጫን ያስተዳድሩ"
         },
         "form": {
             "fullName": "ሙሉ ስም",
-            "namePlaceholder": "የመጋቢ ስም",
+            "namePlaceholder": "የአስተዳዳሪ ስም",
             "email": "የኢሜል አድራሻ",
-            "emailPlaceholder": "pastor@example.com",
+            "emailPlaceholder": "admin@example.com",
             "temporaryPassword": "ጊዜያዊ የይለፍ ቃል",
             "assignBranch": "ቅርንጫፍ ይመድቡ",
             "chooseAnotherWay": "ሌላ አማራጭ ተጠቀም"
         },
         "actions": {
-            "block": "መጋቢውን አግድ",
+            "block": "አስተዳዳሪውን አግድ",
             "unblock": "የመጋቢውን እገዳ አንሳ",
             "changeRole": "ተግባር ይቀይሩ"
         },
@@ -493,14 +493,14 @@
             "blockConfirmPrefix": "እርግጠኛ ነዎት {{name}}ን {{action}} ይፈልጋሉ?",
             "blockWarning": "የስርዓት መዳረሻ ያጣሉ።",
             "unblockWarning": "የስርዓት መዳረሻን ያገኛሉ።",
-            "blockSuccess": "መጋቢ በተሳካ ሁኔታ ታግዷል",
-            "unblockSuccess": "የመጋቢ እገዳ በተሳካ ሁኔታ ተነስቷል",
+            "blockSuccess": "አስተዳዳሪ በተሳካ ሁኔታ ታግዷል",
+            "unblockSuccess": "የአስተዳዳሪ እገዳ በተሳካ ሁኔታ ተነስቷል",
             "nameRequired": "ሙሉ ስም ያስፈልጋል",
-            "updateSuccess": "መጋቢ በተሳካ ሁኔታ ተዘምኗል",
+            "updateSuccess": "አስተዳዳሪ በተሳካ ሁኔታ ተዘምኗል",
             "detailsRequired": "እባክዎን ሁሉንም አስፈላጊ መስኮች ይሙሉ",
-            "registerSuccess": "መጋቢ በተሳካ ሁኔታ ተመዝግቧል",
-            "noPastors": "ምንም መጋቢዎች አልተገኙም",
-            "noPastorsSub": "እባክዎን ፍለጋዎን ያስተካክሉ ወይም አዲስ መጋቢ ይመዝግቡ።",
+            "registerSuccess": "አስተዳዳሪ በተሳካ ሁኔታ ተመዝግቧል",
+            "noPastors": "ምንም አስተዳዳሪዎች አልተገኙም",
+            "noPastorsSub": "እባክዎን ፍለጋዎን ያስተካክሉ ወይም አዲስ አስተዳዳሪ ይመዝግቡ።",
             "confirmDeleteMsg": "እርግጠኛ ነዎት ይህንን አገልጋይ መሰረዝ ይፈልጋሉ? ይህ እርምጃ ሊቀለበስ አይችልም።"
         }
     },
@@ -671,6 +671,7 @@
         "systemHint": "የስርዓት ድርጊቶች እንደተከናወኑ እዚህ ይታያሉ።",
         "event": "ክስተት",
         "events": "ክስተቶች",
+        "filterByDate": "በቀን ይለዩ",
         "changeDetails": "የለውጥ ዝርዝሮች",
         "before": "በፊት",
         "after": "በኋላ",
@@ -684,7 +685,7 @@
         "lastPage": "የመጨረሻው ገጽ",
         "scope": {
             "super_admin": "ሁሉም የስርዓት አቀፍ እንቅስቃሴዎች",
-            "pastor": "በቤተክርስቲያንዎ ውስጥ ያሉ እንቅስቃሴዎች",
+            "admin": "በቤተክርስቲያንዎ ውስጥ ያሉ እንቅስቃሴዎች",
             "servant": "በቤተክርስቲያንዎ ውስጥ ያሉ እንቅስቃሴዎች"
         },
         "labels": {
@@ -707,7 +708,7 @@
         },
         "entities": {
             "SERVANT": "አገልጋይ",
-            "PASTOR": "መጋቢ",
+            "ADMIN": "አስተዳዳሪ",
             "MEMBER": "አባል",
             "CHURCH": "ቤተክርስቲያን",
             "DEPARTMENT": "ክፍል",

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Menu, Search } from "lucide-react";
+import { Menu } from "lucide-react";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { supabase } from "../supabaseClient";
 import logo from "../assets/logo.png";
-import NotificationCenter from "./NotificationCenter";
 
 interface MobileHeaderProps {
     onMenuClick: () => void;
@@ -53,16 +52,6 @@ export default function MobileHeader({ onMenuClick, containerRef }: MobileHeader
         setIsAtTop(latest < 20);
     });
 
-    const openCommandPalette = () => {
-        const event = new KeyboardEvent('keydown', {
-            key: 'k',
-            metaKey: true,
-            ctrlKey: true,
-            bubbles: true,
-        });
-        window.dispatchEvent(event);
-    };
-
     return (
         <motion.header
             initial={{ y: 0 }}
@@ -81,7 +70,7 @@ export default function MobileHeader({ onMenuClick, containerRef }: MobileHeader
             className="lg:hidden fixed top-0 left-0 right-0 z-30 h-14 sm:h-16 flex items-center px-3 sm:px-6 transition-all"
         >
             <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-white dark:bg-gray-800 flex items-center justify-center p-0.5 shadow-sm border border-[#4B9BDC]/10 dark:border-gray-700">
+                <div className="w-8 h-8 rounded-none bg-white flex items-center justify-center p-0.5 shadow-sm border border-[#4B9BDC]/10 dark:border-gray-700">
                     <img src={logo} alt="Logo" className="w-full h-full object-contain" />
                 </div>
                 <div className="flex flex-col min-w-0">
@@ -94,26 +83,12 @@ export default function MobileHeader({ onMenuClick, containerRef }: MobileHeader
                 </div>
             </div>
 
-            <div className="flex items-center gap-2">
-                {/* Search button (mobile) */}
-                <button
-                    onClick={openCommandPalette}
-                    className="p-2.5 bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700 rounded-xl text-gray-400 active:scale-95 transition-all"
-                >
-                    <Search size={17} />
-                </button>
-
-                {/* Notification Center */}
-                <NotificationCenter />
-
-                {/* Menu button */}
-                <button
-                    onClick={onMenuClick}
-                    className="p-2.5 bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700 rounded-xl text-[#4B9BDC] active:scale-95 transition-all"
-                >
-                    <Menu size={20} />
-                </button>
-            </div>
+            <button
+                onClick={onMenuClick}
+                className="p-2.5 bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700 rounded-xl text-[#4B9BDC] active:scale-95 transition-all"
+            >
+                <Menu size={20} />
+            </button>
         </motion.header>
     );
 }

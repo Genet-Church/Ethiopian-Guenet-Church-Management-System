@@ -61,7 +61,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
       name: t("sidebar.dashboard"),
       path: "/",
       icon: LayoutDashboard,
-      roles: ["super_admin", "pastor", "servant"],
+      roles: ["super_admin", "admin", "servant"],
     },
     {
       name: t("sidebar.churches"),
@@ -70,8 +70,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
       roles: ["super_admin"],
     },
     {
-      name: t("sidebar.pastors"),
-      path: "/pastors",
+      name: t("sidebar.admins"),
+      path: "/admins",
       icon: UserCheck,
       roles: ["super_admin"],
     },
@@ -79,37 +79,37 @@ export default function Sidebar({ onClose }: SidebarProps) {
       name: t("sidebar.servants"),
       path: "/servants",
       icon: ShieldCheck,
-      roles: ["super_admin", "pastor"],
+      roles: ["super_admin", "admin"],
     },
     {
       name: t("sidebar.departments"),
       path: "/departments",
       icon: Layers,
-      roles: ["super_admin", "pastor"],
+      roles: ["super_admin", "admin"],
     },
     {
       name: t("sidebar.members"),
       path: "/members",
       icon: Users,
-      roles: ["super_admin", "pastor", "servant"],
+      roles: ["super_admin", "admin", "servant"],
     },
     {
       name: t("sidebar.activities"),
       path: "/activities",
       icon: Calendar,
-      roles: ["super_admin", "pastor", "servant"],
+      roles: ["super_admin", "admin", "servant"],
     },
     {
       name: t("sidebar.reports"),
       path: "/reports",
       icon: FileBarChart,
-      roles: ["super_admin"],
+      roles: ["super_admin", "admin"],
     },
     {
       name: t("sidebar.settings"),
       path: "/settings",
       icon: Settings,
-      roles: ["super_admin", "pastor", "servant"],
+      roles: ["super_admin", "admin", "servant"],
     },
   ];
 
@@ -155,7 +155,6 @@ export default function Sidebar({ onClose }: SidebarProps) {
           <div className="sidebar-brand">
             <div className="sidebar-logo-wrap group">
               <img src={logo} alt="Logo" className="sidebar-logo-img transition-transform duration-200 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
             </div>
             <div className="sidebar-brand-text">
               <h2 className="sidebar-church-name">

@@ -6,12 +6,6 @@ import { Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { springPresets } from "../utils/animations";
 import { useTheme } from "../context/ThemeContext";
-import CommandPalette from "./CommandPalette";
-import KeyboardShortcutsModal from "./KeyboardShortcutsModal";
-import Breadcrumbs from "./Breadcrumbs";
-import WelcomeGreeting from "./WelcomeGreeting";
-import NotificationCenter from "./NotificationCenter";
-import StatusBar from "./StatusBar";
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,10 +14,6 @@ export default function Layout() {
 
   return (
     <div className="layout-root">
-      {/* Global Components */}
-      <CommandPalette />
-      <KeyboardShortcutsModal />
-
       {/* Mobile sidebar overlay */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -71,12 +61,6 @@ export default function Layout() {
           className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-gradient-to-bl from-[#7EC8F2]/15 to-transparent pointer-events-none rounded-full blur-[120px] -z-10"
         ></motion.div>
 
-        {/* Desktop Top Bar with Status + Notifications */}
-        <div className="hidden lg:flex items-center justify-end gap-3 px-6 py-3 absolute top-3 right-3 z-20">
-          <StatusBar />
-          <NotificationCenter />
-        </div>
-
         {/* Mobile Header */}
         <MobileHeader onMenuClick={() => setSidebarOpen(true)} containerRef={mainRef} />
 
@@ -85,10 +69,6 @@ export default function Layout() {
           className="layout-main-content"
         >
           <div className="max-w-7xl mx-auto w-full">
-            {/* Welcome Greeting (shows once per day per session) */}
-            <WelcomeGreeting />
-            {/* Breadcrumb Navigation */}
-            <Breadcrumbs />
             <Outlet />
           </div>
         </main>

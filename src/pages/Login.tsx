@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
-import { Mail, Lock, ArrowRight, ArrowLeft, CheckCircle, Globe, Sun, Moon, Quote } from "lucide-react";
+import { Mail, Lock, ArrowRight, ArrowLeft, CheckCircle, Globe, Sun, Moon, Quote, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { springPresets, interactivePresets } from "../utils/animations";
@@ -14,6 +14,7 @@ import logo from "../assets/logo.png";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [resetSent, setResetSent] = useState(false);
@@ -35,7 +36,7 @@ export default function Login() {
           <div className="relative">
             <div className="w-16 h-16 rounded-full border-4 border-gray-100 border-t-[#4B9BDC] animate-spin"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
+              <img src={logo} alt="Logo" className="w-8 h-8 object-contain bg-white rounded-none p-1" />
             </div>
           </div>
           <p className="text-gray-500 font-medium animate-pulse">{t("login.establishingSession")}</p>
@@ -162,7 +163,7 @@ export default function Login() {
             transition={{ delay: 0.05, duration: 0.15 }}
             className="flex items-center gap-3 mb-10"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f0f7fd] to-[#e2effc] flex items-center justify-center shadow-lg shadow-[#4B9BDC]/10 ring-1 ring-[#4B9BDC]/10 p-2">
+            <div className="w-16 h-16 rounded-none bg-white flex items-center justify-center shadow-lg shadow-gray-200/50 ring-1 ring-gray-100 p-2">
               <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain" />
             </div>
             <div>
@@ -222,13 +223,44 @@ export default function Login() {
                         <Lock size={18} className="text-gray-500 dark:text-gray-400" />
                       </div>
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="block w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-[#4B9BDC]/50 focus:border-[#4B9BDC] outline-none transition-all dark:text-gray-200 sm:text-sm"
+                        className="block w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-[#4B9BDC]/50 focus:border-[#4B9BDC] outline-none transition-all dark:text-gray-200 sm:text-sm"
                         placeholder="••••••••"
                       />
+                      <div className="absolute inset-y-0 right-0 pr-2 flex items-center">
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-800/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#4B9BDC]/50"
+                        >
+                          <AnimatePresence mode="wait" initial={false}>
+                            {showPassword ? (
+                              <motion.div
+                                key="eye-off"
+                                initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
+                                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                                exit={{ opacity: 0, scale: 0.5, rotate: 45 }}
+                                transition={{ duration: 0.15 }}
+                              >
+                                <EyeOff size={18} />
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="eye"
+                                initial={{ opacity: 0, scale: 0.5, rotate: 45 }}
+                                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                                exit={{ opacity: 0, scale: 0.5, rotate: -45 }}
+                                transition={{ duration: 0.15 }}
+                              >
+                                <Eye size={18} />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
 
@@ -429,7 +461,7 @@ export default function Login() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.05, type: "spring", stiffness: 100 }}
-            className="w-32 h-32 rounded-[2.5rem] bg-white/10 backdrop-blur-xl flex items-center justify-center mb-10 shadow-[0_12px_40px_rgba(255,255,255,0.15)] p-4 ring-4 ring-white/10"
+            className="w-32 h-32 rounded-none bg-white flex items-center justify-center mb-10 shadow-2xl shadow-black/10 p-4 ring-4 ring-white/20"
           >
             <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain drop-shadow-[0_0_12px_rgba(126,200,242,0.4)]" />
           </motion.div>

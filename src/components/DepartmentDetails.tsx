@@ -26,7 +26,7 @@ interface CombinedMember {
     full_name: string;
     email: string | null;
     phone: string | null;
-    type: "Member" | "Servant" | "Pastor";
+    type: "Member" | "Servant" | "Admin";
     avatar_url?: string | null;
 }
 
@@ -63,7 +63,7 @@ export default function DepartmentDetails({ department }: DepartmentDetailsProps
 
             if (membersError) throw membersError;
 
-            // 2. Fetch profiles (pastors/servants) via profile_departments
+            // 2. Fetch profiles (admins/servants) via profile_departments
             const { data: profileDepts, error: profileError } = await supabase
                 .from("profile_departments")
                 .select(`
@@ -92,7 +92,7 @@ export default function DepartmentDetails({ department }: DepartmentDetailsProps
                     full_name: pd.profiles.full_name,
                     email: null,
                     phone: null,
-                    type: pd.profiles.role === "pastor" ? ("Pastor" as const) : ("Servant" as const),
+                    type: pd.profiles.role === "admin" ? ("Admin" as const) : ("Servant" as const),
                     avatar_url: pd.profiles.avatar_url,
                     role: pd.profiles.role
                 })) || [])
@@ -245,7 +245,7 @@ export default function DepartmentDetails({ department }: DepartmentDetailsProps
                                             <h4 className="member-name font-bold text-sm text-gray-900 dark:text-gray-100 truncate transition-colors">
                                                 {member.full_name}
                                             </h4>
-                                            <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md ${member.type === 'Pastor' ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400' :
+                                            <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-md ${member.type === 'Admin' ? 'bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400' :
                                                 member.type === 'Servant' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
                                                     'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
                                                 }`}>

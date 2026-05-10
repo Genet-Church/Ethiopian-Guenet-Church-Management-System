@@ -101,9 +101,9 @@ export default function Members() {
           )
         `);
 
-      let rolesToFetch = ["pastor", "servant"];
+      let rolesToFetch = ["admin", "servant"];
       if (profile?.role === "servant") {
-        rolesToFetch = ["pastor"]; // Servants shouldn't watch other servants
+        rolesToFetch = ["admin"]; // Servants shouldn't watch other servants
       }
 
       let profilesQuery = supabase.from("profiles").select(`
@@ -113,7 +113,7 @@ export default function Members() {
           profile_departments ( departments ( id, name ) )
         `).in("role", rolesToFetch);
 
-      if ((profile?.role === "pastor" || profile?.role === "servant") && profile.church_id) {
+      if ((profile?.role === "admin" || profile?.role === "servant") && profile.church_id) {
         query = query.eq("church_id", profile.church_id);
         profilesQuery = profilesQuery.eq("church_id", profile.church_id);
       }
@@ -209,7 +209,7 @@ export default function Members() {
     );
   }, [members, searchQuery]);
 
-  const canEdit = profile?.role === "pastor" || profile?.role === "servant";
+  const canEdit = profile?.role === "admin" || profile?.role === "servant";
 
   return (
     <MasterDetailLayout
@@ -239,7 +239,7 @@ export default function Members() {
           ) : (
             <div className="flex items-center gap-1">
               <button
-                onClick={() => navigate(viewingMember.role === 'pastor' ? '/pastors' : '/servants')}
+                onClick={() => navigate(viewingMember.role === 'admin' ? '/admins' : '/servants')}
                 className="p-2 text-gray-500 dark:text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
                 title="Manage Profile"
               >

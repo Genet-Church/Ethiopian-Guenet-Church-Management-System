@@ -2,7 +2,7 @@
 create extension if not exists "uuid-ossp";
 
 -- Create Enum Types
-create type user_role as enum ('super_admin', 'pastor', 'servant');
+create type user_role as enum ('super_admin', 'admin', 'servant');
 
 -- Create Tables
 
@@ -112,7 +112,7 @@ create policy "Super Admins can manage departments"
 create policy "Pastors can manage departments in their church" 
   on public.departments for all 
   using (
-    public.get_my_role() = 'pastor' and 
+    public.get_my_role() = 'admin' and 
     church_id = public.get_my_church_id()
   );
 
@@ -137,7 +137,7 @@ create policy "Super Admins can manage all members"
 create policy "Pastors can manage members in their church" 
   on public.members for all 
   using (
-    public.get_my_role() = 'pastor' and 
+    public.get_my_role() = 'admin' and 
     church_id = public.get_my_church_id()
   );
 

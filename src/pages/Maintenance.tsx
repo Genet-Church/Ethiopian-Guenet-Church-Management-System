@@ -22,7 +22,7 @@ export default function Maintenance() {
       <div className="max-w-md bg-white p-10 rounded-3xl shadow-xl border border-gray-100 relative z-10">
         <div className="flex justify-center mb-6">
           <div className="relative">
-            <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 p-4 border border-gray-100">
+            <div className="w-24 h-24 bg-white rounded-none flex items-center justify-center shadow-lg transform rotate-3 p-4 border border-gray-100">
               <img src={logo} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div className="absolute -bottom-3 -right-3 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-100">
