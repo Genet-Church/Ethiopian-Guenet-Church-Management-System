@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../context/LanguageContext";
 import { useTheme } from "../context/ThemeContext";
 import { supabase } from "../supabaseClient";
 import logo from "../assets/logo.png";
+import NotificationCenter from "./NotificationCenter";
 
 interface MobileHeaderProps {
     onMenuClick: () => void;
@@ -52,6 +53,16 @@ export default function MobileHeader({ onMenuClick, containerRef }: MobileHeader
         setIsAtTop(latest < 20);
     });
 
+    const openCommandPalette = () => {
+        const event = new KeyboardEvent('keydown', {
+            key: 'k',
+            metaKey: true,
+            ctrlKey: true,
+            bubbles: true,
+        });
+        window.dispatchEvent(event);
+    };
+
     return (
         <motion.header
             initial={{ y: 0 }}
@@ -83,12 +94,26 @@ export default function MobileHeader({ onMenuClick, containerRef }: MobileHeader
                 </div>
             </div>
 
-            <button
-                onClick={onMenuClick}
-                className="p-2.5 bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700 rounded-xl text-[#4B9BDC] active:scale-95 transition-all"
-            >
-                <Menu size={20} />
-            </button>
+            <div className="flex items-center gap-2">
+                {/* Search button (mobile) */}
+                <button
+                    onClick={openCommandPalette}
+                    className="p-2.5 bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700 rounded-xl text-gray-400 active:scale-95 transition-all"
+                >
+                    <Search size={17} />
+                </button>
+
+                {/* Notification Center */}
+                <NotificationCenter />
+
+                {/* Menu button */}
+                <button
+                    onClick={onMenuClick}
+                    className="p-2.5 bg-white dark:bg-slate-800 shadow-md border border-gray-100 dark:border-slate-700 rounded-xl text-[#4B9BDC] active:scale-95 transition-all"
+                >
+                    <Menu size={20} />
+                </button>
+            </div>
         </motion.header>
     );
 }
