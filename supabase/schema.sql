@@ -42,6 +42,51 @@ create table public.members (
   phone text,
   work_type text,
   email text,
+  photo text,
+  dob date,
+  place_of_birth text,
+  mother_tongue text,
+  salvation_date date,
+  salvation_place text,
+  previous_church text,
+  reason_for_coming text,
+  faith text,
+  baptism_status text,
+  baptism_date date,
+  field_of_study text,
+  educational_level text,
+  grade text,
+  university_year text,
+  school_name text,
+  employment_status text,
+  workplace_address text,
+  income_amount numeric,
+  marital_status text,
+  spouse_name text,
+  marriage_date date,
+  marriage_place text,
+  children jsonb default '[]'::jsonb,
+  additional_family_info text,
+  living_situation text,
+  service_type text,
+  service_duration text,
+  service_responsibility text,
+  current_service text,
+  spiritual_gift text,
+  future_service text,
+  additional_service_info text,
+  fellowship_start_date date,
+  fellowship_name text,
+  fellowship_responsibility text,
+  fellowship_mentor text,
+  fellowship_leader text,
+  additional_fellowship_info text,
+  member_signature text,
+  form_filled_date date,
+  fellowship_leader_signature text,
+  zone_rep_signature text,
+  middle_sector_rep_signature text,
+  status text default 'Active',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -107,12 +152,17 @@ create policy "Departments are viewable by everyone"
 
 create policy "Super Admins can manage departments" 
   on public.departments for all 
-  using (public.get_my_role() = 'super_admin');
+  using (public.get_my_role() = 'super_admin')
+  with check (public.get_my_role() = 'super_admin');
 
-create policy "Pastors can manage departments in their church" 
+create policy "Church staff can manage departments in their church" 
   on public.departments for all 
   using (
-    public.get_my_role() = 'admin' and 
+    public.get_my_role() in ('admin', 'servant') and 
+    church_id = public.get_my_church_id()
+  )
+  with check (
+    public.get_my_role() in ('admin', 'servant') and 
     church_id = public.get_my_church_id()
   );
 
@@ -134,10 +184,14 @@ create policy "Super Admins can manage all members"
   on public.members for all 
   using (public.get_my_role() = 'super_admin');
 
-create policy "Pastors can manage members in their church" 
+create policy "Church staff can manage members in their church" 
   on public.members for all 
   using (
-    public.get_my_role() = 'admin' and 
+    public.get_my_role() in ('admin', 'servant') and 
+    church_id = public.get_my_church_id()
+  )
+  with check (
+    public.get_my_role() in ('admin', 'servant') and 
     church_id = public.get_my_church_id()
   );
 

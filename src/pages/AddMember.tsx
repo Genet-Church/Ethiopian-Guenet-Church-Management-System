@@ -308,6 +308,7 @@ export default function AddMember() {
         department_id: data.department_id || null,
         income_amount: data.income_amount && !isNaN(parseFloat(data.income_amount)) ? parseFloat(data.income_amount) : null,
         dob: data.dob || null, salvation_date: data.salvation_date || null,
+        baptism_date: data.baptism_date || null,
         marriage_date: data.marriage_date || null, fellowship_start_date: data.fellowship_start_date || null,
         form_filled_date: data.form_filled_date || null,
       };

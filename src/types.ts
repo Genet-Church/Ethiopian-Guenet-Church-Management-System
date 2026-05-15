@@ -63,11 +63,17 @@ export interface Member {
   previous_church?: string;
   reason_for_coming?: string;
   faith?: string;
+  baptism_status?: string;
+  baptism_date?: string;
 
   // Education & Work
   field_of_study?: string;
   educational_level?: string;
+  grade?: string;
+  university_year?: string;
+  school_name?: string;
   employment_status?: string;
+  work_type?: string;
   workplace_address?: string;
   income_amount?: number;
 
