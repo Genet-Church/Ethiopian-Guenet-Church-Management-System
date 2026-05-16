@@ -78,9 +78,11 @@ export default function Departments() {
 
   useEffect(() => {
     if (id && departments.length > 0) {
-      const d = departments.find((d) => d.id === id);
+      const d = departments.find((d) => String(d.id) === String(id));
       if (d) {
         setSelectedDeptForView(d);
+      } else {
+        setSelectedDeptForView(null);
       }
     } else if (!id) {
       setSelectedDeptForView(null);
@@ -235,7 +237,7 @@ export default function Departments() {
 
   const deleteDepartment = async (id: string) => {
     try {
-      const deptToDelete = departments.find((d) => d.id === id);
+      const deptToDelete = departments.find((d) => String(d.id) === String(id));
       const { error } = await supabase.from("departments").delete().eq("id", id);
       if (error) throw error;
 
@@ -497,12 +499,12 @@ export default function Departments() {
                     key={dept.id}
                     onClick={() => navigate(`/departments/${dept.id}`)}
                     whileHover={{ scale: 1.005, backgroundColor: isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.9)' }}
-                    className={`group cursor-pointer relative overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl flex items-center p-2.5 sm:p-3 md:p-4 gap-2.5 sm:gap-3 md:gap-4 transition-all border border-transparent shadow-sm hover:shadow-lg ${dept.id === id ? 'ring-2' : ''}`}
+                    className={`group cursor-pointer relative overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl flex items-center p-2.5 sm:p-3 md:p-4 gap-2.5 sm:gap-3 md:gap-4 transition-all border border-transparent shadow-sm hover:shadow-lg ${String(dept.id) === String(id) ? 'ring-2' : ''}`}
                     style={{
                       ...d.card,
-                      borderColor: dept.id === id ? colors.accent : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)'),
-                      background: dept.id === id ? (isDark ? `${colors.light}` : `${colors.bg}`) : undefined,
-                      boxShadow: dept.id === id ? `0 8px 32px ${colors.border}` : undefined,
+                      borderColor: String(dept.id) === String(id) ? colors.accent : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)'),
+                      background: String(dept.id) === String(id) ? (isDark ? `${colors.light}` : `${colors.bg}`) : undefined,
+                      boxShadow: String(dept.id) === String(id) ? `0 8px 32px ${colors.border}` : undefined,
                       '--tw-ring-color': colors.accent
                     } as React.CSSProperties}
                   >

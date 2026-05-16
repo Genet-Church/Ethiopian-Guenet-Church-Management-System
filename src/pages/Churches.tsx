@@ -88,7 +88,7 @@ export default function Churches() {
   };
 
   const handleChurchClick = async (church: ChurchWithCount) => {
-    if (selectedChurch?.id === church.id) {
+    if (String(selectedChurch?.id) === String(church.id)) {
       setSelectedChurch(null);
       return;
     }
@@ -215,8 +215,8 @@ export default function Churches() {
         diff
       );
 
-      setChurches(churches.map(c => c.id === editingChurch.id ? { ...c, ...diff.new } : c));
-      if (selectedChurch?.id === editingChurch.id) {
+      setChurches(churches.map(c => String(c.id) === String(editingChurch.id) ? { ...c, ...diff.new } : c));
+      if (String(selectedChurch?.id) === String(editingChurch.id)) {
         setSelectedChurch({ ...selectedChurch, ...diff.new } as any);
       }
 
@@ -254,8 +254,8 @@ export default function Churches() {
         { name: church.name, location: church.location }
       );
 
-      setChurches(churches.filter(c => c.id !== church.id));
-      if (selectedChurch?.id === church.id) setSelectedChurch(null);
+      setChurches(churches.filter(c => String(c.id) !== String(church.id)));
+      if (String(selectedChurch?.id) === String(church.id)) setSelectedChurch(null);
       toast.success(t('churches.messages.deleteSuccess'), { id: loadingToast });
     } catch (error: any) {
       console.error("Error deleting church:", error);
@@ -666,14 +666,14 @@ export default function Churches() {
                     whileHover={{ scale: 1.005, backgroundColor: isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.9)' }}
                     className="group cursor-pointer relative overflow-hidden rounded-2xl flex items-center p-4 gap-4 transition-all border border-transparent hover:shadow-lg"
                     style={{
-                      ...(selectedChurch?.id === church.id ? d.cardActive : d.card),
-                      borderColor: selectedChurch?.id === church.id
+                      ...(String(selectedChurch?.id) === String(church.id) ? d.cardActive : d.card),
+                      borderColor: String(selectedChurch?.id) === String(church.id)
                         ? (isDark ? 'rgba(59, 130, 246, 0.5)' : 'rgba(59, 130, 246, 0.3)')
                         : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)')
                     }}
                   >
                     {/* Active indicator bar */}
-                    {selectedChurch?.id === church.id && (
+                    {String(selectedChurch?.id) === String(church.id) && (
                       <motion.div
                         layoutId="activeChurchBar"
                         className="absolute left-0 top-0 bottom-0 w-1.5"
@@ -685,10 +685,10 @@ export default function Churches() {
                     <div className="shrink-0 pl-2">
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${selectedChurch?.id === church.id ? 'text-white' : 'text-blue-600 group-hover:text-white'}`}
                         style={{
-                          background: selectedChurch?.id === church.id
+                          background: String(selectedChurch?.id) === String(church.id)
                             ? 'linear-gradient(135deg, #3b82f6, #6366f1)'
                             : 'linear-gradient(135deg, #eff6ff, #dbeafe)',
-                          boxShadow: selectedChurch?.id === church.id ? '0 8px 24px rgba(59,130,246,0.3)' : 'none',
+                          boxShadow: String(selectedChurch?.id) === String(church.id) ? '0 8px 24px rgba(59,130,246,0.3)' : 'none',
                         }}
                       >
                         <Building size={20} />
@@ -723,7 +723,7 @@ export default function Churches() {
 
                     {/* Arrow/Indicator */}
                     <div className="text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors pr-2">
-                      {selectedChurch?.id === church.id ? (
+                      {String(selectedChurch?.id) === String(church.id) ? (
                         <div className="bg-blue-500 text-white rounded-full p-1">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         </div>

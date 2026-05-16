@@ -420,7 +420,7 @@ export default function Servants() {
   const handleDelete = async (id: string) => {
     if (!window.confirm(t('servants.confirmDeleteMsg'))) return;
     try {
-      const servantToDelete = servants.find((s) => s.id === id);
+      const servantToDelete = servants.find((s) => String(s.id) === String(id));
       const { error } = await supabase.from("profiles").delete().eq("id", id);
       if (error) throw error;
 

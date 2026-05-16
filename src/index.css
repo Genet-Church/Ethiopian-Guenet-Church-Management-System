@@ -558,23 +558,21 @@ textarea.form-input:focus {
 .sidebar-logo-wrap {
   width: 44px;
   height: 44px;
-  border-radius: 0;
-  background: #ffffff;
+  border-radius: 14px;
+  background: transparent;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 0;
+  overflow: hidden;
 }
 
 .sidebar-logo-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  border-radius: 50%;
   filter: drop-shadow(0 0 8px rgba(75, 155, 220, 0.3));
 }
 

@@ -36,7 +36,7 @@ export default function Login() {
           <div className="relative">
             <div className="w-16 h-16 rounded-full border-4 border-gray-100 border-t-[#4B9BDC] animate-spin"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <img src={logo} alt="Logo" className="w-8 h-8 object-contain bg-white rounded-none p-1" />
+              <img src={logo} alt="Logo" className="w-8 h-8 object-contain rounded-full p-1" />
             </div>
           </div>
           <p className="text-gray-500 font-medium animate-pulse">{t("login.establishingSession")}</p>
@@ -163,8 +163,8 @@ export default function Login() {
             transition={{ delay: 0.05, duration: 0.15 }}
             className="flex items-center gap-3 mb-10"
           >
-            <div className="w-16 h-16 rounded-none bg-white flex items-center justify-center shadow-lg shadow-gray-200/50 ring-1 ring-gray-100 p-2">
-              <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain" />
+            <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
+              <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain rounded-full" />
             </div>
             <div>
               <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1e293b] dark:from-white to-[#4B9BDC] tracking-tight">
@@ -461,9 +461,9 @@ export default function Login() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.05, type: "spring", stiffness: 100 }}
-            className="w-32 h-32 rounded-none bg-white flex items-center justify-center mb-10 shadow-2xl shadow-black/10 p-4 ring-4 ring-white/20"
+            className="w-36 h-36 flex items-center justify-center mb-10"
           >
-            <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain drop-shadow-[0_0_12px_rgba(126,200,242,0.4)]" />
+            <img src={logo} alt="Ethiopian Guenet Church Logo" className="w-full h-full object-contain rounded-full drop-shadow-[0_0_20px_rgba(126,200,242,0.5)]" />
           </motion.div>
 
           <motion.h2

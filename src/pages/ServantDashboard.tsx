@@ -85,7 +85,7 @@ export default function ServantDashboard() {
 
   const deleteMember = async (id: string) => {
     if (!window.confirm(t('servants.confirmDeleteMsg'))) return;
-    const memberToDelete = members.find((m) => m.id === id);
+    const memberToDelete = members.find((m) => String(m.id) === String(id));
     const loadingToast = toast.loading(t('common.loading'));
     const { error } = await supabase.from("members").delete().eq("id", id);
     if (!error) {

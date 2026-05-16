@@ -73,9 +73,11 @@ export default function Members() {
 
   useEffect(() => {
     if (id && members.length > 0) {
-      const m = members.find((m) => m.id === id);
+      const m = members.find((m) => String(m.id) === String(id));
       if (m) {
         setViewingMember(m);
+      } else {
+        setViewingMember(null);
       }
     } else if (!id) {
       setViewingMember(null);
@@ -120,7 +122,13 @@ export default function Members() {
 
       const [membersRes, profilesRes] = await Promise.all([query.order("full_name"), profilesQuery]);
 
-      if (membersRes.error) throw membersRes.error;
+      if (membersRes.error) {
+        if (membersRes.error.code === "PGRST200") {
+          await fetchMembersLegacy();
+          return;
+        }
+        throw membersRes.error;
+      }
       if (profilesRes.error) {
         console.error("Error fetching profiles as members:", profilesRes.error);
       }
@@ -153,6 +161,64 @@ export default function Members() {
     } catch (error) {
       console.error("Error fetching members:", error);
       toast.error(t("members.messages.loadError"));
+      await fetchMembersLegacy();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMembersLegacy = async () => {
+    try {
+      setLoading(true);
+      let query = supabase.from("members").select(`*, churches ( name, map_link )`);
+
+      let rolesToFetch = ["admin", "servant"];
+      if (profile?.role === "servant") {
+        rolesToFetch = ["admin"]; // Servants shouldn't watch other servants
+      }
+
+      let profilesQuery = supabase.from("profiles").select(`
+          id, full_name, role, church_id, department_id, avatar_url, email,
+          churches ( name, map_link )
+        `).in("role", rolesToFetch);
+
+      if ((profile?.role === "admin" || profile?.role === "servant") && profile.church_id) {
+        query = query.eq("church_id", profile.church_id);
+        profilesQuery = profilesQuery.eq("church_id", profile.church_id);
+      }
+
+      const [membersRes, profilesRes] = await Promise.all([query.order("full_name"), profilesQuery]);
+
+      if (membersRes.error) throw membersRes.error;
+
+      const regularMembers = (membersRes.data as any[]) || [];
+      const fetchedProfiles = (profilesRes.data as any[]) || [];
+
+      const memberEmails = new Set(regularMembers.map((m: any) => m.email?.toLowerCase()).filter(Boolean));
+
+      const profileMembers = fetchedProfiles
+        .filter((p: any) => !memberEmails.has(p.email?.toLowerCase()))
+        .map((p: any) => ({
+          id: p.id,
+          church_id: p.church_id || '',
+          department_id: p.department_id || null,
+          full_name: p.full_name || 'Unknown',
+          phone: null,
+          email: p.email || null,
+          photo: p.avatar_url || undefined,
+          churches: p.churches || null,
+          departments: null,
+          role: p.role,
+          isProfile: true,
+          status: "Active"
+        } as unknown as MemberWithDetails));
+
+      let allMembers = [...regularMembers, ...profileMembers];
+      allMembers.sort((a, b) => (a.full_name || '').localeCompare(b.full_name || ''));
+      setMembers(allMembers);
+    } catch (error) {
+      console.error("Error fetching members (legacy):", error);
+      toast.error(t("members.messages.loadError"));
     } finally {
       setLoading(false);
     }
@@ -176,7 +242,7 @@ export default function Members() {
 
   const deleteMember = async (id: string) => {
     const loadingToast = toast.loading(t("members.messages.deleting"));
-    const memberToDelete = members.find((m) => m.id === id);
+    const memberToDelete = members.find((m) => String(m.id) === String(id));
     const { error } = await supabase.from("members").delete().eq("id", id);
     if (!error) {
       await logActivity(
@@ -429,12 +495,12 @@ export default function Members() {
                     key={member.id}
                     onClick={() => navigate(`/members/${member.id}`)}
                     whileHover={{ scale: 1.005, backgroundColor: isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.9)' }}
-                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl flex items-center p-2.5 sm:p-3 md:p-4 gap-2.5 sm:gap-3 md:gap-4 cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-lg ${member.id === id ? 'ring-2' : ''}`}
+                    className={`group relative overflow-hidden rounded-lg sm:rounded-xl md:rounded-2xl flex items-center p-2.5 sm:p-3 md:p-4 gap-2.5 sm:gap-3 md:gap-4 cursor-pointer transition-all border border-transparent shadow-sm hover:shadow-lg ${String(member.id) === String(id) ? 'ring-2' : ''}`}
                     style={{
                       ...d.card,
-                      borderColor: member.id === id ? colors.accent : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)'),
-                      background: member.id === id ? (isDark ? `${colors.light}` : `${colors.bg}`) : undefined,
-                      boxShadow: member.id === id ? `0 8px 32px ${colors.border}` : undefined,
+                      borderColor: String(member.id) === String(id) ? colors.accent : (isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)'),
+                      background: String(member.id) === String(id) ? (isDark ? `${colors.light}` : `${colors.bg}`) : undefined,
+                      boxShadow: String(member.id) === String(id) ? `0 8px 32px ${colors.border}` : undefined,
                       '--tw-ring-color': colors.accent
                     } as React.CSSProperties}
                   >
@@ -495,8 +561,8 @@ export default function Members() {
 
                     {/* Completion Badge */}
                     <div className="hidden sm:flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-lg border border-gray-100 dark:border-gray-700/50">
-                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: completion >= 80 ? '#10b981' : completion >= 50 ? '#f59e0b' : '#ef4444' }}></div>
-                        <span className="text-[10px] font-bold text-gray-600 dark:text-gray-400">{completion}%</span>
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: completion >= 80 ? '#10b981' : completion >= 50 ? '#f59e0b' : '#ef4444' }}></div>
+                      <span className="text-[10px] font-bold text-gray-600 dark:text-gray-400">{completion}%</span>
                     </div>
 
                     {/* Chevron */}

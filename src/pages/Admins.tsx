@@ -191,8 +191,8 @@ export default function Admins() {
           church_id: formData.church_id || null,
         };
 
-        const oldChurch = churches.find(c => c.id === editingPastor.church_id)?.name || "Unknown";
-        const newChurch = churches.find(c => c.id === updates.church_id)?.name || "No Branch Assigned";
+        const oldChurch = churches.find(c => String(c.id) === String(editingPastor.church_id))?.name || "Unknown";
+        const newChurch = churches.find(c => String(c.id) === String(updates.church_id))?.name || "No Branch Assigned";
 
         const logOld = { full_name: editingPastor.full_name, church_id: editingPastor.church_id, church: oldChurch };
         const logNew = { full_name: formData.full_name, church_id: updates.church_id, church: newChurch };
@@ -256,7 +256,7 @@ export default function Admins() {
           throw new Error(responseData.error);
         }
 
-        const churchName = churches.find(c => c.id === formData.church_id)?.name || "No Branch Assigned";
+        const churchName = churches.find(c => String(c.id) === String(formData.church_id))?.name || "No Branch Assigned";
 
         await logActivity("CREATE", "ADMIN", `Registered new admin ${formData.full_name}`, responseData?.user?.id || null, {
           email: formData.email,
@@ -723,7 +723,7 @@ export default function Admins() {
                               ) : (
                                 filteredDropdownMembers.map((member) => {
                                   const church = churches.find(c => c.id === member.church_id);
-                                  const isSelected = selectedMember?.id === member.id;
+                                  const isSelected = String(selectedMember?.id) === String(member.id);
 
                                   return (
                                     <div
