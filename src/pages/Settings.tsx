@@ -25,9 +25,10 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { supabase } from "../supabaseClient";
-import toast from "react-hot-toast";
 import { logActivity, getObjectDiff } from "../utils/activityLogger";
 import { motion, AnimatePresence, Variants } from "framer-motion";
+import LeavePrompt from "../components/LeavePrompt";
+import toast from "react-hot-toast";
 
 export default function Settings() {
   const { profile, user, settings: globalSettings, refreshProfile, calendarType, updateCalendarType } = useAuth();
@@ -329,6 +330,7 @@ export default function Settings() {
       animate="show"
       className="space-y-6"
     >
+      <LeavePrompt isDirty={hasProfileChanges || currentPassword.length > 0 || newPassword.length > 0} />
       <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t("settings.title")}</h1>

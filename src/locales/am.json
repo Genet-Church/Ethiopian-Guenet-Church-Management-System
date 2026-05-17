@@ -96,7 +96,10 @@
             "female": "ሴት"
         },
         "save": "አስቀምጥ",
-        "cancel": "ተሰርዟል",
+        "cancel": "ሰርዝ",
+        "discardChangesTitle": "ለውጦችን አታስቀምጥ?",
+        "discardChangesMessage": "ያላስቀመጧቸው ለውጦች አሉ። በእርግጠኝነት መተው ይፈልጋሉ?",
+        "yesDiscard": "አዎ, ተው",
         "delete": "ሰርዝ",
         "unknown": "ያልታወቀ",
         "edit": "አስተካክል",

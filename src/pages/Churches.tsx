@@ -12,6 +12,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { logActivity, getObjectDiff } from "../utils/activityLogger";
 import { ds } from "../utils/darkStyles";
 import ConfirmDialog from "../components/ConfirmDialog";
+import LeavePrompt from "../components/LeavePrompt";
 
 interface ChurchWithCount extends Church {
   members: { count: number }[];
@@ -294,6 +295,7 @@ export default function Churches() {
       transition={{ duration: 0.15 }}
       className="space-y-8 pb-10"
     >
+      <LeavePrompt isDirty={(isModalOpen && hasAddChanges) || (isEditModalOpen && hasEditChanges)} />
       {/* ═══════════════ ULTRA HERO HEADER ═══════════════ */}
       <div className="relative overflow-hidden rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] p-4 sm:p-8 md:p-10 shadow-lg" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #132d50 40%, #1a4a7a 70%, #2563eb 100%)' }}>
         {/* Animated mesh orbs */}

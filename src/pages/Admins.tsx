@@ -31,6 +31,7 @@ import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { ds } from "../utils/darkStyles";
+import LeavePrompt from "../components/LeavePrompt";
 
 interface Admin extends Profile {
   email?: string;
@@ -338,6 +339,7 @@ export default function Admins() {
       transition={{ duration: 0.3 }}
       className="space-y-8 pb-10"
     >
+      <LeavePrompt isDirty={isModalOpen && hasChanges} />
       {/* ═══════════════ ULTRA HERO HEADER ═══════════════ */}
       <div className="relative overflow-hidden rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] p-4 sm:p-8 md:p-10 shadow-lg" style={{ background: 'linear-gradient(135deg, #0c1929 0%, #173254 40%, #3178B5 70%, #4B9BDC 100%)' }}>
         <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-25 blur-[80px] animate-pulse" style={{ background: 'radial-gradient(circle, #7EC8F2, transparent)' }}></div>

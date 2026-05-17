@@ -543,15 +543,21 @@ export default function Members() {
                         ) : (
                           <>
                             {member.email && (
-                              <div className="flex items-center gap-1 sm:gap-1.5 truncate">
+                              <div className="flex items-center gap-1 sm:gap-1.5 truncate w-full">
                                 <Mail size={10} className="shrink-0 opacity-70 sm:w-3 sm:h-3" />
                                 <span className="truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">{member.email}</span>
+                                <a href={`mailto:${member.email}`} onClick={(e) => e.stopPropagation()} className="ml-1 p-1 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-500 rounded-lg transition-colors group-hover:scale-110" title={t('common.sendEmail', "Send Email")}>
+                                  <Mail size={10} />
+                                </a>
                               </div>
                             )}
                             {member.phone && (
-                              <div className="hidden sm:flex items-center gap-1.5 truncate">
+                              <div className="hidden sm:flex items-center gap-1.5 truncate w-full">
                                 <Phone size={12} className="shrink-0 opacity-70" />
                                 <span>{member.phone}</span>
+                                <a href={`tel:${member.phone}`} onClick={(e) => e.stopPropagation()} className="ml-1 p-1 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 text-green-600 rounded-lg transition-colors group-hover:scale-110" title={t('common.call', "Call")}>
+                                  <Phone size={10} className="animate-pulse" />
+                                </a>
                               </div>
                             )}
                           </>

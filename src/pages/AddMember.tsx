@@ -17,6 +17,7 @@ import { logActivity, getObjectDiff } from "../utils/activityLogger";
 import { invokeSupabaseFunction } from "../utils/supabaseFunctions";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import LanguageChipSelector from "../components/LanguageChipSelector";
+import LeavePrompt from "../components/LeavePrompt";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { ds } from "../utils/darkStyles";
@@ -443,6 +444,7 @@ export default function AddMember() {
       transition={{ duration: 0.15 }}
       className="min-h-screen pb-20"
     >
+      <LeavePrompt isDirty={isDirty} />
       <div className="max-w-7xl mx-auto flex gap-6">
         <div className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-28">

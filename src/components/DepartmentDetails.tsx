@@ -254,15 +254,21 @@ export default function DepartmentDetails({ department }: DepartmentDetailsProps
                                         </div>
                                         <div className="flex flex-col gap-0.5 mt-0.5 md:mt-1">
                                             {member.phone && (
-                                                <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400 hidden sm:flex">
+                                                <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400 hidden sm:flex w-full group/phone">
                                                     <Phone size={10} className="shrink-0" />
                                                     <span className="truncate">{member.phone}</span>
+                                                    <a href={`tel:${member.phone}`} onClick={(e) => e.stopPropagation()} className="ml-1 p-1 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 text-green-600 rounded-lg transition-colors group-hover/phone:scale-110" title={t('common.call', "Call")}>
+                                                        <Phone size={10} className="animate-pulse" />
+                                                    </a>
                                                 </div>
                                             )}
                                             {member.email && (
-                                                <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400">
+                                                <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400 w-full group/email">
                                                     <Mail size={10} className="shrink-0" />
                                                     <span className="truncate max-w-[150px]">{member.email}</span>
+                                                    <a href={`mailto:${member.email}`} onClick={(e) => e.stopPropagation()} className="ml-1 p-1 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-500 rounded-lg transition-colors group-hover/email:scale-110" title={t('common.sendEmail', "Send Email")}>
+                                                        <Mail size={10} />
+                                                    </a>
                                                 </div>
                                             )}
                                         </div>

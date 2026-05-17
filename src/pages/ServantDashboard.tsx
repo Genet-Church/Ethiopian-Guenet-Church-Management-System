@@ -315,8 +315,11 @@ export default function ServantDashboard() {
                         </div>
                         <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 font-medium">
                           {member.phone && (
-                            <span className="flex items-center gap-1">
+                            <span className="flex items-center gap-1 group/phone">
                               <Phone size={11} /> {member.phone}
+                              <a href={`tel:${member.phone}`} onClick={(e) => e.stopPropagation()} className="ml-1 p-1 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 text-green-600 rounded-lg transition-colors group-hover/phone:scale-110" title={t('common.call', "Call")}>
+                                <Phone size={10} className="animate-pulse" />
+                              </a>
                             </span>
                           )}
                           <span className="flex items-center gap-1">

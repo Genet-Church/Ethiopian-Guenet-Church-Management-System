@@ -29,6 +29,7 @@ import { ds } from "../utils/darkStyles";
 import MasterDetailLayout from "../components/common/MasterDetailLayout";
 import DepartmentDetails from "../components/DepartmentDetails";
 import { getDeptColors } from "../utils/departmentColors";
+import LeavePrompt from "../components/LeavePrompt";
 
 interface DepartmentWithDetails extends Department {
   churches: {
@@ -316,6 +317,7 @@ export default function Departments() {
         transition={{ duration: 0.3 }}
         className="space-y-6 pb-10"
       >
+        <LeavePrompt isDirty={isModalOpen && hasChanges} />
         {/* ═══════════════ ULTRA HERO HEADER ═══════════════ */}
         <div className="relative overflow-hidden rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] p-3 sm:p-5 md:p-6 shadow-xl" style={{ background: 'linear-gradient(135deg, #0c1929 0%, #173254 40%, #3178B5 70%, #4B9BDC 100%)' }}>
           <div className="absolute top-0 right-0 w-40 sm:w-80 h-40 sm:h-80 rounded-full opacity-25 blur-[50px] sm:blur-[80px] animate-pulse" style={{ background: 'radial-gradient(circle, #7EC8F2, transparent)' }}></div>

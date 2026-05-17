@@ -27,6 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const hasProfileRef = useRef(false);
   const [settings, setSettings] = useState<GlobalSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [calendarType, setCalendarTypeState] = useState<'gregorian' | 'ethiopian'>(() => {
@@ -125,6 +126,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       } else {
         setProfile(null);
+        hasProfileRef.current = false;
         setLoading(false);
       }
     });
@@ -133,7 +135,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const fetchProfile = async (userId: string) => {
-    setLoading(true);
+    if (!hasProfileRef.current) {
+      setLoading(true);
+    }
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -145,6 +149,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error fetching profile:", error);
         await supabase.auth.signOut();
         setProfile(null);
+        hasProfileRef.current = false;
         setUser(null);
         setSession(null);
         toast.error("Unable to load your profile. Please sign in again.");
@@ -152,6 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (data.is_blocked) {
           await supabase.auth.signOut();
           setProfile(null);
+          hasProfileRef.current = false;
           setUser(null);
           setSession(null);
           toast.error(
@@ -159,12 +165,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           );
         } else {
           setProfile(data);
+          hasProfileRef.current = true;
         }
       }
     } catch (err) {
       console.error("Unexpected error fetching profile:", err);
       await supabase.auth.signOut();
       setProfile(null);
+      hasProfileRef.current = false;
       setUser(null);
       setSession(null);
       toast.error("Unable to load your profile. Please sign in again.");

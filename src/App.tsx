@@ -1,7 +1,8 @@
 import React from "react";
 import {
-  HashRouter as Router,
-  Routes,
+  createHashRouter,
+  RouterProvider,
+  createRoutesFromElements,
   Route,
   Navigate,
 } from "react-router-dom";
@@ -71,151 +72,155 @@ const RoleGuard = ({
   return <>{children}</>;
 };
 
+const router = createHashRouter(
+  createRoutesFromElements(
+    <>
+      <Route path="/login" element={<Login />} />
+      <Route path="/update-password" element={<UpdatePassword />} />
+      <Route path="/maintenance" element={<Maintenance />} />
+
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<DashboardHome />} />
+
+        <Route
+          path="churches"
+          element={
+            <RoleGuard allowedRoles={["super_admin"]}>
+              <Churches />
+            </RoleGuard>
+          }
+        />
+
+        <Route
+          path="admins"
+          element={
+            <RoleGuard allowedRoles={["super_admin"]}>
+              <Admins />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="servants"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin"]}>
+              <Servants />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="departments"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <Departments />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="departments/:id"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <Departments />
+            </RoleGuard>
+          }
+        />
+
+        <Route
+          path="members"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <Members />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="members/:id"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <Members />
+            </RoleGuard>
+          }
+        />
+
+        <Route
+          path="members/add"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <AddMember />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="members/edit/:id"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <AddMember />
+            </RoleGuard>
+          }
+        />
+
+        <Route
+          path="settings"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <Settings />
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="activities"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
+              <Activities />
+            </RoleGuard>
+          }
+        />
+
+        <Route
+          path="reports"
+          element={
+            <RoleGuard allowedRoles={["super_admin", "admin"]}>
+              <Reports />
+            </RoleGuard>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </>
+  )
+);
+
 export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <LanguageProvider>
           <ErrorBoundary>
-            <Router>
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  className: "text-sm font-medium rounded-xl shadow-lg border dark:border-gray-800",
-                  duration: 4000,
-                  style: {
-                    background: 'var(--toast-bg, #fff)',
-                    color: 'var(--toast-color, #374151)',
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                className: "text-sm font-medium rounded-xl shadow-lg border dark:border-gray-800",
+                duration: 4000,
+                style: {
+                  background: 'var(--toast-bg, #fff)',
+                  color: 'var(--toast-color, #374151)',
+                },
+                success: {
+                  iconTheme: {
+                    primary: "#4B9BDC",
+                    secondary: "#fff",
                   },
-                  success: {
-                    iconTheme: {
-                      primary: "#4B9BDC",
-                      secondary: "#fff",
-                    },
-                  },
-                }}
-              />
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/update-password" element={<UpdatePassword />} />
-                <Route path="/maintenance" element={<Maintenance />} />
-
-                <Route
-                  path="/"
-                  element={
-                    <ProtectedRoute>
-                      <Layout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route index element={<DashboardHome />} />
-
-                  <Route
-                    path="churches"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin"]}>
-                        <Churches />
-                      </RoleGuard>
-                    }
-                  />
-
-                  <Route
-                    path="admins"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin"]}>
-                        <Admins />
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="servants"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin"]}>
-                        <Servants />
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="departments"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <Departments />
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="departments/:id"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <Departments />
-                      </RoleGuard>
-                    }
-                  />
-
-                  <Route
-                    path="members"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <Members />
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="members/:id"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <Members />
-                      </RoleGuard>
-                    }
-                  />
-
-                  <Route
-                    path="members/add"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <AddMember />
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="members/edit/:id"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <AddMember />
-                      </RoleGuard>
-                    }
-                  />
-
-                  <Route
-                    path="settings"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <Settings />
-                      </RoleGuard>
-                    }
-                  />
-                  <Route
-                    path="activities"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin", "servant"]}>
-                        <Activities />
-                      </RoleGuard>
-                    }
-                  />
-
-                  <Route
-                    path="reports"
-                    element={
-                      <RoleGuard allowedRoles={["super_admin", "admin"]}>
-                        <Reports />
-                      </RoleGuard>
-                    }
-                  />
-
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Route>
-              </Routes>
-            </Router>
+                },
+              }}
+            />
+            <RouterProvider router={router} />
           </ErrorBoundary>
         </LanguageProvider>
       </AuthProvider>

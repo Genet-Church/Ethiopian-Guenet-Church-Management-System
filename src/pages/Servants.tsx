@@ -18,6 +18,7 @@ import {
   Map,
   Sparkles,
   Flame,
+  Phone,
 } from "lucide-react";
 import { supabase } from "../supabaseClient";
 import { Church, Profile, Department } from "../types";
@@ -32,6 +33,7 @@ import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import { useTheme } from "../context/ThemeContext";
 import { useLanguage } from "../context/LanguageContext";
 import { ds } from "../utils/darkStyles";
+import LeavePrompt from "../components/LeavePrompt";
 
 interface Servant extends Profile {
   email?: string;
@@ -479,6 +481,7 @@ export default function Servants() {
       transition={{ duration: 0.3 }}
       className="space-y-8 pb-10"
     >
+      <LeavePrompt isDirty={isModalOpen && hasChanges} />
       {/* ═══════════════ ULTRA HERO HEADER ═══════════════ */}
       <div className="relative overflow-hidden rounded-xl sm:rounded-[1.5rem] md:rounded-[2rem] p-4 sm:p-6 md:p-8 shadow-lg" style={{ background: 'linear-gradient(135deg, #0c1929 0%, #173254 40%, #3178B5 70%, #4B9BDC 100%)' }}>
         <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-25 blur-[80px] animate-pulse" style={{ background: 'radial-gradient(circle, #7EC8F2, transparent)' }}></div>
@@ -726,26 +729,51 @@ export default function Servants() {
 
                     <div className="rounded-xl p-3 mt-2 space-y-2" style={d.infoBox}>
                       <div className="flex items-center justify-between gap-2 text-sm font-medium">
-                        <div className="flex items-center gap-2 truncate">
-                          <Building size={14} className={servant.churches ? "text-[#4B9BDC]" : "text-gray-500 dark:text-gray-400"} />
-                          {servant.churches ? (
-                            <span className="text-gray-700 dark:text-gray-400 truncate text-xs font-semibold">{servant.churches.name}</span>
-                          ) : (
-                            <span className="text-gray-500 dark:text-gray-400 italic text-xs dark:text-gray-500">{t('servants.messages.noBranchAssigned')}</span>
-                          )}
-                        </div>
-                        {servant.churches?.map_link && (
-                          <a
-                            href={servant.churches.map_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg transition-colors shrink-0"
-                            style={{ background: 'rgba(16,185,129,0.08)', color: '#10b981' }}
-                            title={t('dashboard.activity.viewOnMap')}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Map size={12} />
-                          </a>
+                        {profile?.role === "admin" ? (
+                          <div className="flex flex-col gap-2 w-full truncate">
+                            {servant.email && (
+                              <div className="flex items-center gap-2">
+                                <Mail size={14} className="text-[#4B9BDC]" />
+                                <span className="text-gray-700 dark:text-gray-400 truncate text-xs font-semibold">{servant.email}</span>
+                                <a href={`mailto:${servant.email}`} onClick={(e) => e.stopPropagation()} className="ml-auto p-1.5 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-500 rounded-lg transition-colors group-hover:scale-110" title={t('common.sendEmail', "Send Email")}>
+                                  <Mail size={12} />
+                                </a>
+                              </div>
+                            )}
+                            {servant.phone && (
+                              <div className="flex items-center gap-2">
+                                <Phone size={14} className="text-[#4B9BDC]" />
+                                <span className="text-gray-700 dark:text-gray-400 truncate text-xs font-semibold">{servant.phone}</span>
+                                <a href={`tel:${servant.phone}`} onClick={(e) => e.stopPropagation()} className="ml-auto p-1.5 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/40 text-green-600 rounded-lg transition-colors group-hover:scale-110" title={t('common.call', "Call")}>
+                                  <Phone size={12} className="animate-pulse" />
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 truncate">
+                              <Building size={14} className={servant.churches ? "text-[#4B9BDC]" : "text-gray-500 dark:text-gray-400"} />
+                              {servant.churches ? (
+                                <span className="text-gray-700 dark:text-gray-400 truncate text-xs font-semibold">{servant.churches.name}</span>
+                              ) : (
+                                <span className="text-gray-500 dark:text-gray-400 italic text-xs dark:text-gray-500">{t('servants.messages.noBranchAssigned')}</span>
+                              )}
+                            </div>
+                            {servant.churches?.map_link && (
+                              <a
+                                href={servant.churches.map_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-1.5 rounded-lg transition-colors shrink-0"
+                                style={{ background: 'rgba(16,185,129,0.08)', color: '#10b981' }}
+                                title={t('dashboard.activity.viewOnMap')}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Map size={12} />
+                              </a>
+                            )}
+                          </>
                         )}
                       </div>
                       {profile?.role !== "servant" && servant.profile_departments && servant.profile_departments.length > 0 && (
