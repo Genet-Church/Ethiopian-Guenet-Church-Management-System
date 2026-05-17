@@ -55,7 +55,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     // Only track activity if user is logged in
     if (!user) return;
 
+    let lastActivity = Date.now();
+
     const resetTimer = () => {
+      const now = Date.now();
+      // Throttle timer reset to once per second to prevent main thread blocking on mousemove
+      if (now - lastActivity < 1000 && timeoutRef.current) return;
+      lastActivity = now;
+
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(async () => {
         toast.error("Logged out due to inactivity");
